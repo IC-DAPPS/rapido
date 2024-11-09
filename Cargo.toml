@@ -1,0 +1,16 @@
+[workspace]
+members = ["src/backend"]
+
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+
+
+[workspace.dependencies]
+candid = "0.10"
+ic-cdk = "0.16"
+ic-cdk-timers = "0.10"
+ic-cdk-macros = "0.17.0"
+serde = "1.0"
+sha2 = "0.10"

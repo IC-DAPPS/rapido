@@ -1,0 +1,12 @@
+[package]
+name = "backend"
+version = "0.1.0"
+edition.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+ic-cdk-macros = { workspace = true }
+ic-cdk = { workspace = true }
+candid = { workspace = true }
