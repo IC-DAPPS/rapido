@@ -1,1 +1,143 @@
-service : { greet : (text) -> (text) query }
+type AddBusinessError = variant { AccountNotFound; BusinessNotFound };
+type AddMessageErr = variant { AccountNotFound; ChatNotFound; NotAParticipant };
+type Business = record {
+  logo : text;
+  name : text;
+  created_at : nat64;
+  category : BusinessCategory;
+  transactions : vec TransactionEntry;
+  pay_id : text;
+};
+type BusinessCategory = variant {
+  Healthcare;
+  RealEstate;
+  Food;
+  Energy;
+  Retail;
+  Professional;
+  Technology;
+  Entertainment;
+  Transportation;
+  Other;
+  Agriculture;
+  Education;
+  Finance;
+  Hospitality;
+  Construction;
+  Manufacturing;
+};
+type BusinessInUser = record {
+  id : text;
+  b_logo : text;
+  b_name : text;
+  b_pay_id : text;
+  last_activity : nat64;
+  b_category : BusinessCategory;
+  b_principal : principal;
+  transactions : vec BusinessUserTx;
+};
+type BusinessSignUpArgs = record {
+  logo : text;
+  name : text;
+  category : BusinessCategory;
+  pay_id : text;
+};
+type BusinessUserTx = record {
+  tx_id : nat;
+  note : opt text;
+  sender_id : text;
+  timestamp : nat64;
+  amount : nat;
+};
+type Chat = record {
+  id : text;
+  participants : vec text;
+  messages : vec MessageOrTransaction;
+  last_activity : nat64;
+};
+type CreateChatErr = variant {
+  AccountNotFound;
+  ParticipantNotFound;
+  CallerAndParticipantSame;
+};
+type DataResponse = variant { User : UserData; Business : Business; NotSignUp };
+type FetchInitDataError = variant { AnonymousCaller };
+type GetBusinessError = variant { AccountNotFound };
+type Message = record {
+  read_by : vec text;
+  content : text;
+  sender_id : text;
+  timestamp : nat64;
+};
+type MessageOrTransaction = variant {
+  Transaction : Transaction;
+  Message : Message;
+};
+type PayIdOrPrincipal = variant { PayId : text; Principal : principal };
+type RecordTxErr = variant {
+  AlreadyRecorded;
+  InterCanisterCall : text;
+  InvalidTransaction : text;
+  BothAccountsNotFound : record { to : principal; from : principal };
+  FailedTo;
+};
+type Result = variant { Ok : Message; Err : AddMessageErr };
+type Result_1 = variant { Ok : Chat; Err : CreateChatErr };
+type Result_2 = variant { Ok : DataResponse; Err : FetchInitDataError };
+type Result_3 = variant { Ok : Business; Err : GetBusinessError };
+type Result_4 = variant { Ok; Err : AddMessageErr };
+type Result_5 = variant { Ok; Err : RecordTxErr };
+type Result_6 = variant { Ok; Err : SignUpError };
+type Result_7 = variant { Ok : BusinessInUser; Err : AddBusinessError };
+type SignUpArg = variant {
+  User : UserSignUpArgs;
+  Business : BusinessSignUpArgs;
+};
+type SignUpError = variant { AccountExist; PayIdExist; AnonymousCaller };
+type Transaction = record {
+  read_by : vec text;
+  tx_id : nat;
+  note : opt text;
+  sender_id : text;
+  timestamp : nat64;
+  amount : nat;
+};
+type TransactionEntry = record {
+  tx_id : nat;
+  kind : TxKind;
+  name : text;
+  note : opt text;
+  timestamp : nat64;
+  amount : nat;
+  pay_id : text;
+};
+type TxKind = variant { Sends; Receive };
+type User = record {
+  my_chats : vec record { nat64; text };
+  name : text;
+  created_at : nat64;
+  with_businesses : vec record { nat64; text };
+  profile_pic : text;
+  pay_id : text;
+};
+type UserData = record {
+  chats : vec Chat;
+  user : User;
+  history : vec TransactionEntry;
+  business : vec BusinessInUser;
+};
+type UserSignUpArgs = record { name : text; profile_pic : text; pay_id : text };
+service : {
+  add_message : (text, text) -> (Result);
+  create_chat : (PayIdOrPrincipal) -> (Result_1);
+  fetch_data : () -> (Result_2) query;
+  fetch_initial_data : () -> (Result_2) query;
+  get_business : () -> (Result_3) query;
+  get_chat : (text) -> (opt Chat) query;
+  get_my_chats : () -> (vec Chat) query;
+  get_user : () -> (opt User) query;
+  mark_message_read : (text) -> (Result_4);
+  record_xfer_transaction : (nat, opt text) -> (Result_5);
+  sign_up : (SignUpArg) -> (Result_6);
+  user_add_business : (PayIdOrPrincipal) -> (Result_7);
+}

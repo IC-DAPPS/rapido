@@ -1,5 +1,117 @@
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.11s
-     Running unittests src/lib.rs (target/debug/deps/backend-725e19581d3534ca)
+warning: unused imports: `BI` and `TxInfo`
+ --> src/backend/src/user.rs:6:72
+  |
+6 |     is_payid_exist, PayIds, StoreHistory, TransactionEntry, TxHistory, TxInfo, TxKind, BI,
+  |                                                                        ^^^^^^          ^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused imports: `Decode` and `Encode`
+ --> src/backend/src/ck_btc_ledger.rs:1:32
+  |
+1 | use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
+  |                                ^^^^^^               ^^^^^^
+
+warning: associated functions `get_mut` and `remove` are never used
+  --> src/backend/src/business.rs:69:8
+   |
+64 | impl BusinessMap {
+   | ---------------- associated functions in this implementation
+...
+69 |     fn get_mut(key: &Principal) -> Option<Business> {
+   |        ^^^^^^^
+...
+77 |     fn remove(key: Principal) -> Option<Business> {
+   |        ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: field `created_at` is never read
+  --> src/backend/src/business.rs:99:9
+   |
+94 | pub struct BusinessMetadata {
+   |            ---------------- field in this struct
+...
+99 |     pub created_at: u64,
+   |         ^^^^^^^^^^
+
+warning: associated functions `get_mut`, `remove`, `contains_key`, and `len` are never used
+   --> src/backend/src/user.rs:105:8
+    |
+100 | impl Chats {
+    | ---------- associated functions in this implementation
+...
+105 |     fn get_mut(key: &ChatId) -> Option<Chat> {
+    |        ^^^^^^^
+...
+113 |     fn remove(key: &ChatId) -> Option<Chat> {
+    |        ^^^^^^
+...
+117 |     fn contains_key(key: &ChatId) -> bool {
+    |        ^^^^^^^^^^^^
+...
+121 |     fn len() -> u64 {
+    |        ^^^
+
+warning: associated functions `get_mut` and `remove` are never used
+   --> src/backend/src/user.rs:172:8
+    |
+167 | impl Users {
+    | ---------- associated functions in this implementation
+...
+172 |     fn get_mut(key: &Principal) -> Option<User> {
+    |        ^^^^^^^
+...
+180 |     fn remove(key: Principal) -> Option<User> {
+    |        ^^^^^^
+
+warning: associated functions `get_mut`, `remove`, `contains_key`, and `len` are never used
+   --> src/backend/src/user.rs:228:8
+    |
+223 | impl BusinessInUser {
+    | ------------------- associated functions in this implementation
+...
+228 |     fn get_mut(key: &String) -> Option<BusinessInUser> {
+    |        ^^^^^^^
+...
+236 |     fn remove(key: &String) -> Option<BusinessInUser> {
+    |        ^^^^^^
+...
+240 |     fn contains_key(key: &String) -> bool {
+    |        ^^^^^^^^^^^^
+...
+244 |     fn len() -> u64 {
+    |        ^^^
+
+warning: associated functions `get_mut`, `remove`, and `contains_key` are never used
+   --> src/backend/src/user.rs:254:8
+    |
+249 | impl StoreHistory {
+    | ----------------- associated functions in this implementation
+...
+254 |     fn get_mut(key: &Principal) -> Option<StoreHistory> {
+    |        ^^^^^^^
+...
+262 |     fn remove(key: Principal) -> Option<StoreHistory> {
+    |        ^^^^^^
+...
+266 |     fn contains_key(key: &Principal) -> bool {
+    |        ^^^^^^^^^^^^
+
+warning: fields `profile_pic` and `created_at` are never read
+   --> src/backend/src/user.rs:291:9
+    |
+288 | pub struct UserMetadata {
+    |            ------------ fields in this struct
+...
+291 |     pub profile_pic: String,
+    |         ^^^^^^^^^^^
+292 |     pub created_at: u64,
+    |         ^^^^^^^^^^
+
+warning: `backend` (lib test) generated 9 warnings (run `cargo fix --lib -p backend --tests` to apply 2 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running unittests src/lib.rs (target/debug/deps/backend-4bf858e2d1290d55)
 
 running 1 test
 test generate_candid ... ok
@@ -13,4 +125,116 @@ Generating type declarations for canister backend:
 Building canisters...
 WARN: Cannot check for vulnerabilities in rust canisters because cargo-audit is not installed. Please run 'cargo install cargo-audit' so that vulnerabilities can be detected.
 Executing: cargo build --target wasm32-unknown-unknown --release -p backend --locked
-    Finished `release` profile [optimized] target(s) in 0.06s
+warning: unused imports: `BI` and `TxInfo`
+ --> src/backend/src/user.rs:6:72
+  |
+6 |     is_payid_exist, PayIds, StoreHistory, TransactionEntry, TxHistory, TxInfo, TxKind, BI,
+  |                                                                        ^^^^^^          ^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused imports: `Decode` and `Encode`
+ --> src/backend/src/ck_btc_ledger.rs:1:32
+  |
+1 | use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
+  |                                ^^^^^^               ^^^^^^
+
+warning: associated functions `get_mut` and `remove` are never used
+  --> src/backend/src/business.rs:69:8
+   |
+64 | impl BusinessMap {
+   | ---------------- associated functions in this implementation
+...
+69 |     fn get_mut(key: &Principal) -> Option<Business> {
+   |        ^^^^^^^
+...
+77 |     fn remove(key: Principal) -> Option<Business> {
+   |        ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: field `created_at` is never read
+  --> src/backend/src/business.rs:99:9
+   |
+94 | pub struct BusinessMetadata {
+   |            ---------------- field in this struct
+...
+99 |     pub created_at: u64,
+   |         ^^^^^^^^^^
+
+warning: associated functions `get_mut`, `remove`, `contains_key`, and `len` are never used
+   --> src/backend/src/user.rs:105:8
+    |
+100 | impl Chats {
+    | ---------- associated functions in this implementation
+...
+105 |     fn get_mut(key: &ChatId) -> Option<Chat> {
+    |        ^^^^^^^
+...
+113 |     fn remove(key: &ChatId) -> Option<Chat> {
+    |        ^^^^^^
+...
+117 |     fn contains_key(key: &ChatId) -> bool {
+    |        ^^^^^^^^^^^^
+...
+121 |     fn len() -> u64 {
+    |        ^^^
+
+warning: associated functions `get_mut` and `remove` are never used
+   --> src/backend/src/user.rs:172:8
+    |
+167 | impl Users {
+    | ---------- associated functions in this implementation
+...
+172 |     fn get_mut(key: &Principal) -> Option<User> {
+    |        ^^^^^^^
+...
+180 |     fn remove(key: Principal) -> Option<User> {
+    |        ^^^^^^
+
+warning: associated functions `get_mut`, `remove`, `contains_key`, and `len` are never used
+   --> src/backend/src/user.rs:228:8
+    |
+223 | impl BusinessInUser {
+    | ------------------- associated functions in this implementation
+...
+228 |     fn get_mut(key: &String) -> Option<BusinessInUser> {
+    |        ^^^^^^^
+...
+236 |     fn remove(key: &String) -> Option<BusinessInUser> {
+    |        ^^^^^^
+...
+240 |     fn contains_key(key: &String) -> bool {
+    |        ^^^^^^^^^^^^
+...
+244 |     fn len() -> u64 {
+    |        ^^^
+
+warning: associated functions `get_mut`, `remove`, and `contains_key` are never used
+   --> src/backend/src/user.rs:254:8
+    |
+249 | impl StoreHistory {
+    | ----------------- associated functions in this implementation
+...
+254 |     fn get_mut(key: &Principal) -> Option<StoreHistory> {
+    |        ^^^^^^^
+...
+262 |     fn remove(key: Principal) -> Option<StoreHistory> {
+    |        ^^^^^^
+...
+266 |     fn contains_key(key: &Principal) -> bool {
+    |        ^^^^^^^^^^^^
+
+warning: fields `profile_pic` and `created_at` are never read
+   --> src/backend/src/user.rs:291:9
+    |
+288 | pub struct UserMetadata {
+    |            ------------ fields in this struct
+...
+291 |     pub profile_pic: String,
+    |         ^^^^^^^^^^^
+292 |     pub created_at: u64,
+    |         ^^^^^^^^^^
+
+warning: `backend` (lib) generated 9 warnings (run `cargo fix --lib -p backend` to apply 2 suggestions)
+    Finished `release` profile [optimized] target(s) in 0.03s

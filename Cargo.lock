@@ -27,6 +27,9 @@ dependencies = [
  "candid",
  "ic-cdk",
  "ic-cdk-macros 0.17.0",
+ "ic-stable-structures",
+ "serde",
+ "serde_bytes",
 ]
 
 [[package]]
@@ -222,6 +225,15 @@ dependencies = [
  "serde",
  "serde_tokenstream",
  "syn 2.0.87",
+]
+
+[[package]]
+name = "ic-stable-structures"
+version = "0.6.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "03f3044466a69802de74e710dc0300b706a05696a0531c942ca856751a13b0db"
+dependencies = [
+ "ic_principal",
 ]
 
 [[package]]
