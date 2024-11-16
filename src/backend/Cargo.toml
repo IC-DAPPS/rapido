@@ -10,3 +10,6 @@ crate-type = ["cdylib"]
 ic-cdk-macros = { workspace = true }
 ic-cdk = { workspace = true }
 candid = { workspace = true }
+ic-stable-structures = { workspace = true }
+serde = { workspace = true }
+serde_bytes = { workspace = true }
