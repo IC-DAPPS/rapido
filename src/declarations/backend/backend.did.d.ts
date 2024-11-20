@@ -151,6 +151,7 @@ export interface _SERVICE {
   'get_chat' : ActorMethod<[string], [] | [Chat]>,
   'get_my_chats' : ActorMethod<[], Array<Chat>>,
   'get_user' : ActorMethod<[], [] | [User]>,
+  'is_pay_id_available' : ActorMethod<[string], boolean>,
   'mark_message_read' : ActorMethod<[string], Result_4>,
   'record_xfer_transaction' : ActorMethod<[bigint, [] | [string]], Result_5>,
   'sign_up' : ActorMethod<[SignUpArg], Result_6>,
