@@ -1,5 +1,6 @@
 <script>
 	import { authStore } from '$lib/stores/auth.store';
+	import Button from '@components/ui/button/button.svelte';
 
 	function handleSignIn() {
 		console.log('sign in initiated');
@@ -13,18 +14,18 @@
 
 <div>
 	{#if $authStore.identity}
-		<button on:click={authStore.signOut}>SignOut</button>
+		<Button onclick={authStore.signOut}>SignOut</Button>
 	{:else}
-		<button on:click={handleSignIn}> SignIn </button>
+		<Button onclick={handleSignIn}>SignIn</Button>
 	{/if}
 </div>
 
 <style>
-	button {
+	/* button {
 		padding: 10px 20px;
 		margin: 10px auto;
 		font-size: larger;
-	}
+	} */
 
 	div {
 		display: flex;

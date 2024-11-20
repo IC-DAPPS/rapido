@@ -5,6 +5,7 @@ import type {
 	ChatId,
 	CreateChatResponse,
 	FetchDataResponse,
+	IsPayIdAvailableParams,
 	MarkMessageReadResponse,
 	RecordXferParams,
 	RecordXferTxResponse,
@@ -62,6 +63,12 @@ export class BackendCanister extends Canister<BackendService> {
 		const { get_my_chats } = this.caller({ certified });
 
 		return get_my_chats();
+	};
+
+	isPayIdAvailable = ({ certified, payId }: IsPayIdAvailableParams): Promise<boolean> => {
+		const { is_pay_id_available } = this.caller({ certified });
+
+		return is_pay_id_available(payId);
 	};
 
 	markMessageRead = (chatId: ChatId): Promise<MarkMessageReadResponse> => {

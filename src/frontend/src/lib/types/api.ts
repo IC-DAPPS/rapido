@@ -11,6 +11,7 @@ import type {
 	SignUpError
 } from '@declarations/backend/backend.did';
 import type { Option } from './utils';
+import type { QueryParams } from '@dfinity/utils';
 
 export type ChatId = string;
 
@@ -37,3 +38,7 @@ export type RecordXferTxResponse = { Ok: null } | { Err: RecordTxErr };
 export type SignUpResponse = { Ok: null } | { Err: SignUpError };
 
 export type UserAddBusinessResponse = { Ok: BusinessInUser } | { Err: AddBusinessError };
+
+export interface IsPayIdAvailableParams extends QueryParams {
+	payId: string;
+}

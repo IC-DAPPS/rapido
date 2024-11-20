@@ -1,6 +1,7 @@
 import { getIcrcLedgerCanister } from '$lib/canisters/icrc-ledger.canister';
 import type { CommonCanisterApiFunctionParams } from '$lib/types/canister';
 import { CKBTC_TEST_LEDGER_CANISTER_ID } from '@constants/app.constants';
+import type { Identity } from '@dfinity/agent';
 
 import type {
 	AllowanceParams,
@@ -20,8 +21,10 @@ import type {
 } from '@dfinity/ledger-icrc/dist/candid/icrc_ledger';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, type QueryParams } from '@dfinity/utils';
+import { isIdentityNotEqual } from '@utils/identity.utils';
 
 let canister: IcrcLedgerCanister | undefined = undefined;
+let currentIdentity: Identity;
 
 export const metadata = async ({
 	identity,
@@ -35,7 +38,7 @@ export const metadata = async ({
 export const transactionFee = async ({
 	identity,
 	certified = false
-}: CommonCanisterApiFunctionParams<QueryParams>): Promise<> => {
+}: CommonCanisterApiFunctionParams<QueryParams>): Promise<Tokens> => {
 	const { transactionFee } = await ckBtcLedgerCanister({ identity });
 
 	return transactionFee({ certified });
@@ -145,8 +148,13 @@ const ckBtcLedgerCanister = async ({
 	assertNonNullish(identity, nullishIdentityErrorMessage);
 
 	// Need to implement checking of identity when signout -> signIn
-	if (isNullish(canister)) {
-		canister = await getIcrcLedgerCanister({ identity, canisterId: Principal.from(canisterId) });
+	if (isNullish(canister) || isIdentityNotEqual(currentIdentity, identity)) {
+		canister = await getIcrcLedgerCanister({
+			identity,
+			canisterId: Principal.from(canisterId)
+		});
+
+		currentIdentity = identity;
 	}
 
 	return canister;

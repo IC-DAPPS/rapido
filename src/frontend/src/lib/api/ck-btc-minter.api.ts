@@ -1,6 +1,7 @@
 import { getCkBTCMinterCanister } from '$lib/canisters/ck-btc-minter.canister';
 import type { CommonCanisterApiFunctionParams } from '$lib/types/canister';
 import { CKBTC_TEST_MINTER_CANISTER_ID } from '@constants/app.constants';
+import type { Identity } from '@dfinity/agent';
 import type {
 	CkBTCMinterCanister,
 	EstimateWithdrawalFee,
@@ -20,8 +21,10 @@ import type {
 } from '@dfinity/ckbtc';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, type QueryParams } from '@dfinity/utils';
+import { isIdentityNotEqual } from '@utils/identity.utils';
 
 let canister: CkBTCMinterCanister | undefined = undefined;
+let currentIdentity: Identity;
 
 export const getBtcAddress = async ({
 	identity,
@@ -139,8 +142,13 @@ const ckBTCMinterCanister = async ({
 	assertNonNullish(identity, nullishIdentityErrorMessage);
 
 	// Need to implement checking of identity when signout -> signIn
-	if (isNullish(canister)) {
-		canister = await getCkBTCMinterCanister({ identity, canisterId: Principal.from(canisterId) });
+	if (isNullish(canister) || isIdentityNotEqual(currentIdentity, identity)) {
+		canister = await getCkBTCMinterCanister({
+			identity,
+			canisterId: Principal.from(canisterId)
+		});
+
+		currentIdentity = identity;
 	}
 
 	return canister;

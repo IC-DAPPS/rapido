@@ -1,0 +1,62 @@
+{
+	"auth": {
+		"notify": {
+			"loading": "Authenticating...",
+			"success": "Authentication successful.",
+			"canceled": "Authentication canceled.",
+			"error": "Something went wrong while sign-in.",
+			"sign_out": "Logged out."
+		},
+		"text": {
+			"authenticate": "Login",
+			"logout": "Logout"
+		}
+	},
+	"navigation": {
+		"home": "Home",
+		"transactions": "Transactions",
+		"portfolio": "Portfolio",
+		"story": "Story"
+	},
+	"userdata": {
+		"text": {
+			"profile_setup_title": "Welcome! Let's set this up.",
+			"continue": "Continue",
+			"name": "Your Name",
+			"email": "Your Email",
+			"add_new_form": "Add new",
+			"submit": "Submit",
+			"skip": "Skip",
+			"principal": "Your Principal",
+			"principal_alias": "Account Name | Platform Name",
+			"add_owned_principal_description": "Add your Principals from platforms like ICPSwap, NNS, OpenChat, and more...",
+			"add_known_principal_description": "Add known Principals such as friends, family, organizations, or platforms."
+		},
+		"assertion": {
+			"name_required": "Required field. Minimum two characters.",
+			"email_invalid": "Input valid email.",
+			"principal_alias_name_minimum": "Minimum three non-whitespace characters.",
+			"principal_alias_name_maximum": "Maximum 60 characters allowed.",
+			"principal_invalid": "Input valid principal.",
+			"unique_principal": "Principal must be unique."
+		},
+		"placeholder": {
+			"name": "Name",
+			"email": "Email",
+			"principal": "Principal",
+			"alias_name": "Alias name"
+		},
+		"error": {
+			"fetch": "Failed to fetch user data.",
+			"no_userdata_found": "Set up your profile.",
+			"anonymous_user": "Please Log in.",
+			"error": "Something went wrong while setting up your profile.",
+			"principal_conversion_error": " failed to become principal."
+		}
+	},
+	"transactions": {
+		"error": {
+			"sync": "Failed to sync transactions."
+		}
+	}
+}

@@ -36,6 +36,7 @@ const config = {
 			'@components/*': './src/frontend/src/lib/components/*',
 			'@constants/*': './src/frontend/src/lib/constants/*',
 			'@services/*': './src/frontend/src/lib/services/*',
+			'@states/*': './src/frontend/src/lib/states/*',
 			'@stores/*': './src/frontend/src/lib/stores/*',
 			'@utils/*': './src/frontend/src/lib/utils/*',
 			'@env/*': './src/frontend/src/env'
