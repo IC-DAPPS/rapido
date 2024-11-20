@@ -461,6 +461,17 @@ pub async fn record_xfer_transaction(
     Ok(())
 }
 
+#[query]
+pub async fn is_pay_id_available(pay_id: String) -> bool {
+    if pay_id.len() < 3 {
+        return false;
+    }
+    match PayIds::get(&pay_id) {
+        Some(_) => false,
+        None => true,
+    }
+}
+
 struct TransferTx {
     from: Principal,
     to: Principal,

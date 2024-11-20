@@ -168,6 +168,7 @@ export const idlFactory = ({ IDL }) => {
     'get_chat' : IDL.Func([IDL.Text], [IDL.Opt(Chat)], ['query']),
     'get_my_chats' : IDL.Func([], [IDL.Vec(Chat)], ['query']),
     'get_user' : IDL.Func([], [IDL.Opt(User)], ['query']),
+    'is_pay_id_available' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
     'mark_message_read' : IDL.Func([IDL.Text], [Result_4], []),
     'record_xfer_transaction' : IDL.Func(
         [IDL.Nat, IDL.Opt(IDL.Text)],
