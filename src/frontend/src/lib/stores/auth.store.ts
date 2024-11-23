@@ -49,7 +49,8 @@ const initAuthStore = (): AuthStore => {
 				authClient = authClient ?? (await createAuthClient());
 
 				const identityProvider =
-					Network === 'local'
+					// Network === 'local'
+					false
 						? /apple/i.test(navigator?.vendor)
 							? `http://localhost:8080?canisterId=${INTERNET_IDENTITY_CANISTER_ID}`
 							: `http://${INTERNET_IDENTITY_CANISTER_ID}.localhost:8080`

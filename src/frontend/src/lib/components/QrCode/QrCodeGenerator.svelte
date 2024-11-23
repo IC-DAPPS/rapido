@@ -50,7 +50,7 @@
 	</canvas>
 
 	{#if logo}
-		<div class="logo rounded-full bg-primary-foreground p-2">{@render logo()}</div>
+		<div class="logo rounded-full bg-white p-1.5">{@render logo()}</div>
 	{/if}
 </div>
 

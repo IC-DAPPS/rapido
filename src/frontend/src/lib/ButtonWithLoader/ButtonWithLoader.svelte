@@ -1,10 +1,27 @@
-<script>
+<script lang="ts">
 	import { Button } from '$lib/components/ui/button';
+	import type { ButtonVariant } from '@components/ui/button/button.svelte';
+	import type { Snippet } from 'svelte';
 	import { Loader } from 'lucide-svelte';
 	import { fly } from 'svelte/transition';
 	import { twMerge } from 'tailwind-merge';
 
-	let { disabled, loader, onclick, children, ...props } = $props();
+	let {
+		disabled,
+		loader,
+		onclick,
+		variant = 'default',
+		children,
+		...props
+	}: {
+		disabled?: boolean;
+		loader: boolean;
+		onclick?: () => void | Promise<void>;
+		variant: ButtonVariant;
+		class?: string;
+		loaderClass?: string;
+		children: Snippet;
+	} = $props();
 </script>
 
 <Button
@@ -14,6 +31,7 @@
 	)}
 	disabled={disabled || loader}
 	{onclick}
+	{variant}
 >
 	{#if loader}
 		<div

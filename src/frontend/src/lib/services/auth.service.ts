@@ -16,6 +16,8 @@ export const signIn = async (params: AuthSignInParams) => {
 			toast.error(get(i18n).auth.notify.canceled, {
 				id: toastId
 			});
+
+			return;
 		}
 		console.error(err);
 		toast.error(get(i18n).auth.notify.error, {

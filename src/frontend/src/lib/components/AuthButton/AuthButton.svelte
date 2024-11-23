@@ -1,32 +1,22 @@
 <script>
 	import { authStore } from '$lib/stores/auth.store';
 	import Button from '@components/ui/button/button.svelte';
-
-	function handleSignIn() {
-		console.log('sign in initiated');
-		try {
-			authStore.signIn({ domain: 'internetcomputer.org' });
-		} catch (error) {
-			console.error('Sign in error:', error);
-		}
-	}
+	import { signIn, signOut } from '@services/auth.service';
 </script>
 
 <div>
 	{#if $authStore.identity}
-		<Button onclick={authStore.signOut}>SignOut</Button>
+		<Button onclick={signOut}>SignOut</Button>
 	{:else}
-		<Button onclick={handleSignIn}>SignIn</Button>
+		<Button
+			onclick={async () => {
+				signIn({ domain: 'ic0.app' });
+			}}>SignIn</Button
+		>
 	{/if}
 </div>
 
 <style>
-	/* button {
-		padding: 10px 20px;
-		margin: 10px auto;
-		font-size: larger;
-	} */
-
 	div {
 		display: flex;
 		justify-content: center;
