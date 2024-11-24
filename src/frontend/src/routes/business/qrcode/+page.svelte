@@ -1,8 +1,19 @@
 <script lang="ts">
 	import Avatar from '@components/Avatar/Avatar.svelte';
+	import CategoryIcons from '@components/CategoryIcons/CategoryIcons.svelte';
 	import QrCodeGenerator from '@components/QrCode/QrCodeGenerator.svelte';
-	import { ArrowLeft, Store } from 'lucide-svelte';
+	import { user } from '@states/app-user.svelte';
+	import { ArrowLeft } from 'lucide-svelte';
+	import { onMount } from 'svelte';
 	import LightningBolt from 'svelte-radix/LightningBolt.svelte';
+
+	let size = 200;
+
+	onMount(() => {
+		if (window.innerWidth >= 1280) {
+			size = 300;
+		}
+	});
 </script>
 
 <a href="/business"><ArrowLeft class="left-5 top-5" /></a>
@@ -16,18 +27,17 @@
 <QrCodeGenerator
 	value={'dwx4w-plydf-jxgs5-uncbu-mfyds-5vjzm-oohax-gmvja-cypv7-tmbt4-dqe'}
 	ariaLabel="QR code"
-	size={200}
+	{size}
 	radius={0}
 	ecLevel={'M'}
 	>{#snippet logo()}
-		<!-- <img src="/logo/token/ckbtc.svg" alt="logo" class="h-10 w-10" /> -->
-		<Avatar src="https://github.com/shadc" name="shadcn" />
+		<Avatar src={user.avatar} name={user.name} />
 	{/snippet}</QrCodeGenerator
 >
 <div class="flex flex-col items-center gap-0.5">
-	<Store class="h-7 w-7" />
-	<h2 class="text-center text-2xl">The Grocery Store</h2>
-	<p class="text-center text-muted-foreground">PAY ID: {'the-grocery--store'}</p>
+	<CategoryIcons category={user.category} />
+	<h2 class="text-center text-2xl">{user.name}</h2>
+	<p class="text-center text-muted-foreground">PAY ID: {user.pay_id}</p>
 </div>
 
 <div class="absolute inset-x-0 bottom-0">

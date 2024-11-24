@@ -26,7 +26,7 @@
 
 {#if btcDepositAddress.address}
 	<QrCodeGenerator
-		value={'dwx4w-plydf-jxgs5-uncbu-mfyds-5vjzm-oohax-gmvja-cypv7-tmbt4-dqe'}
+		value={btcDepositAddress.address}
 		ariaLabel="QR code"
 		{size}
 		radius={0}

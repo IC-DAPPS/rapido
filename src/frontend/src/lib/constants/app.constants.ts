@@ -1,3 +1,5 @@
+import { BtcNetwork } from '@dfinity/ckbtc';
+
 export const INTERNET_IDENTITY_CANISTER_ID =
 	(import.meta.env.VITE_INTERNET_IDENTITY_CANISTER_ID as string) ?? 'rdmx6-jaaaa-aaaaa-aaadq-cai';
 
@@ -11,6 +13,8 @@ export const CKBTC_TEST_LEDGER_CANISTER_ID = 'mc6ru-gyaaa-aaaar-qaaaq-cai';
 export const CKBTC_TEST_MINTER_CANISTER_ID = 'ml52i-qqaaa-aaaar-qaaba-cai';
 
 export const IS_TESTNET = true;
+
+export const BTC_NETWORK = IS_TESTNET ? BtcNetwork.Testnet : BtcNetwork.Mainnet;
 
 export const CKBTC_INDEX_CANISTER_ID = IS_TESTNET
 	? CKBTC_TEST_INDEX_CANISTER_ID
@@ -44,3 +48,5 @@ export const DECIMALS = 8;
 export const DIVISOR = 10 ** DECIMALS;
 
 export const FETCH_BALANCE_INTERVAL = 10000;
+
+export const NANO_SECONDS_IN_MINUTE = 1_000_000_000 * 60;

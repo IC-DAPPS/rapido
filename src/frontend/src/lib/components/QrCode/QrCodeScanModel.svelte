@@ -2,16 +2,39 @@
 	import QrCodeScanner from '@components/QrCode/QrCodeScanner.svelte';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { ScanQrCode } from 'lucide-svelte';
+	import { toast } from 'svelte-sonner';
 
-	let value = $state();
-	const onScanSuccess = (content: string) => {
+	let {
+		value = $bindable(),
+		onScanSuccess = () => {} //default if no prop passed
+	}: { value: string; onScanSuccess?: (content: string) => void } = $props();
+
+	let toastId: string | number;
+
+	const onQrScanSuccess = (content: string) => {
 		value = content;
+
 		open = false;
+
+		onScanSuccess(content);
+
+		toastId = toast.success('QR Code scan success!.', { id: toastId });
 	};
+
+	const onQrScanFailure = (errorMessage: string) => {
+		console.warn(`Code scan error = ${errorMessage}`);
+
+		open = false;
+
+		if (errorMessage.includes('NotFoundException')) {
+			toastId = toast.error('No QR Code Detected.', { id: toastId });
+		} else {
+			toastId = toast.error(`QR Code scan failed!. ${errorMessage}`, { id: toastId });
+		}
+	};
+
 	let open = $state(false);
 </script>
-
-<h1>Scanned Value {value}</h1>
 
 <Dialog.Root bind:open>
 	<Dialog.Trigger><ScanQrCode /></Dialog.Trigger>
@@ -19,6 +42,6 @@
 		<Dialog.Header>
 			<Dialog.Title>Scan QR Code</Dialog.Title>
 		</Dialog.Header>
-		<QrCodeScanner {onScanSuccess} />
+		<QrCodeScanner onScanSuccess={onQrScanSuccess} onScanFailure={onQrScanFailure} />
 	</Dialog.Content>
 </Dialog.Root>

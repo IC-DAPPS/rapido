@@ -10,14 +10,14 @@
 		disabled,
 		loader,
 		onclick,
-		variant = 'default',
+		variant,
 		children,
 		...props
 	}: {
 		disabled?: boolean;
 		loader: boolean;
 		onclick?: () => void | Promise<void>;
-		variant: ButtonVariant;
+		variant?: ButtonVariant;
 		class?: string;
 		loaderClass?: string;
 		children: Snippet;
