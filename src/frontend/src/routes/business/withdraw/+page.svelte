@@ -41,7 +41,7 @@
 	});
 
 	let loader = $state(false);
-	let disabled = $derived(enableAddressError || enableAmountError || loader);
+	let disabled = $derived(enableAddressError || enableAmountError);
 	// let enableAddressError = $derived();
 	// Please enter an amount no higher than your available balance.
 	// Amount to redeem must be at least 0.10000000
@@ -70,14 +70,14 @@
 <p class="text-center text-2xl">Withdraw Bitcoin</p>
 
 <div class="flex w-full flex-col gap-1.5">
-	<Label for="btc-address" class="text-base">Bitcoin Receiving Address</Label>
+	<Label for="btc-address">Bitcoin Receiving Address</Label>
 	<div class="relative">
 		<input
 			bind:value={address}
 			type="text"
 			id="btc-address"
 			placeholder="Enter you address"
-			class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-base file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+			class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
 			required
 			onchange={() => (isAddressTouched = true)}
 		/>
@@ -101,14 +101,15 @@
 </div>
 
 <div class="flex w-full flex-col gap-1.5">
-	<Label for="amount" class="text-base">Amount</Label>
+	<Label for="amount">Amount</Label>
 	<div class="relative">
 		<input
 			bind:value={amount}
 			type="number"
 			id="amount"
+			min={minterInfo.retrieve_btc_min_amount}
 			placeholder="Minimum {minterInfo.retrieve_btc_min_amount}"
-			class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-base file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+			class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
 			required
 			onchange={() => (isAmountTouched = true)}
 		/>
@@ -136,8 +137,6 @@
 </div>
 
 <ButtonWithLoader {disabled} {loader} {onclick}>Withdraw</ButtonWithLoader>
-
-<div></div>
 
 <style>
 	/* Remove arrows for Chrome, Safari, Edge, Opera */

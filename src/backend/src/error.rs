@@ -43,7 +43,6 @@ pub enum AddBusinessError {
 #[derive(candid::CandidType, Clone, Serialize, Debug, Deserialize)]
 pub enum RecordTxErr {
     InterCanisterCall(String),
-    FailedTo,
     InvalidTransaction(String),
     BothAccountsNotFound { from: Principal, to: Principal },
     AlreadyRecorded,

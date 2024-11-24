@@ -81,6 +81,16 @@ export const isPayIdAvailable = async ({
 	return isPayIdAvailable({ certified, payId });
 };
 
+export const getAccountFromPayId = async ({
+	identity,
+	payId,
+	certified = false
+}: CommonCanisterApiFunctionParams<IsPayIdAvailableParams>): Promise<[] | [Principal]> => {
+	const { getAccountFromPayId } = await backendCanister({ identity });
+
+	return getAccountFromPayId({ certified, payId });
+};
+
 export const markMessageRead = async ({
 	identity,
 	chatId

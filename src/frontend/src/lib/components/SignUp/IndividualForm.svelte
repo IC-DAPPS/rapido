@@ -6,6 +6,7 @@
 	import ButtonWithLoader from '$lib/ButtonWithLoader/ButtonWithLoader.svelte';
 	import { isPayIdAvailableSearch, signUpIndividual } from '@services/signup.service';
 	import type { ResultSuccess } from '$lib/types/utils';
+	import { sanitizePayId } from '@utils/payId.utils';
 
 	let {
 		resultSuccess
@@ -64,16 +65,6 @@
 		// Remove leading whitespace
 		name = name.replace(/^\s+/, '');
 	});
-
-	function sanitizePayId(input: string) {
-		// Convert to lowercase
-		let sanitizedInput = input.toLowerCase();
-
-		// Remove non-alphanumeric characters
-		sanitizedInput = sanitizedInput.replace(/[^a-z0-9-]/g, '');
-
-		return sanitizedInput;
-	}
 
 	let isNameTouched = $state(false);
 	let isPayIdTouched = $state(false);

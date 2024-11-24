@@ -30,7 +30,10 @@
 			<p class="text-center">Withdraw</p>
 		</div>
 	</a>
-	<a href="/qrcode" class="w-fit rounded p-2 hover:bg-accent hover:text-accent-foreground">
+	<a
+		href="business/transfer"
+		class="w-fit rounded p-2 hover:bg-accent hover:text-accent-foreground"
+	>
 		<div class="flex w-[68px] flex-col items-center gap-2">
 			<ArrowLeftRight size={30} />
 			<p class="text-center">Transfer</p>

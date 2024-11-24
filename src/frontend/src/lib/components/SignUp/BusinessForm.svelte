@@ -9,6 +9,7 @@
 	import { isPayIdAvailableSearch, signUpBusiness } from '@services/signup.service';
 	import { nonNullish } from '@dfinity/utils';
 	import type { ResultSuccess } from '$lib/types/utils';
+	import { sanitizePayId } from '@utils/payId.utils';
 
 	let { resultSuccess }: { resultSuccess: (result: ResultSuccess) => void } = $props();
 
@@ -31,7 +32,7 @@
 		enableNameError || enablePayIdError || loader || businsesCatergory === undefined
 	);
 
-	const seatchPayIdIsAvailable = async () => {
+	const searchPayIdIsAvailable = async () => {
 		if (payId.length < 3) return;
 
 		loader = true;
@@ -52,7 +53,7 @@
 
 	$effect(() => {
 		payId = sanitizePayId(payId);
-		const id = setTimeout(seatchPayIdIsAvailable, 500);
+		const id = setTimeout(searchPayIdIsAvailable, 500); // debounce
 
 		if (payId.length < 3) {
 			isPayIdAvail = false;
@@ -67,16 +68,6 @@
 		// Remove leading whitespace
 		name = name.replace(/^\s+/, '');
 	});
-
-	function sanitizePayId(input: string) {
-		// Convert to lowercase
-		let sanitizedInput = input.toLowerCase();
-
-		// Remove non-alphanumeric characters
-		sanitizedInput = sanitizedInput.replace(/[^a-z0-9-]/g, '');
-
-		return sanitizedInput;
-	}
 
 	let isNameTouched = $state(false);
 	let isPayIdTouched = $state(false);
