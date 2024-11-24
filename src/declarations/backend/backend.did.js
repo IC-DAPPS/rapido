@@ -164,6 +164,11 @@ export const idlFactory = ({ IDL }) => {
     'create_chat' : IDL.Func([PayIdOrPrincipal], [Result_1], []),
     'fetch_data' : IDL.Func([], [Result_2], ['query']),
     'fetch_initial_data' : IDL.Func([], [Result_2], ['query']),
+    'get_account_from_pay_id' : IDL.Func(
+        [IDL.Text],
+        [IDL.Opt(IDL.Principal)],
+        ['query'],
+      ),
     'get_business' : IDL.Func([], [Result_3], ['query']),
     'get_chat' : IDL.Func([IDL.Text], [IDL.Opt(Chat)], ['query']),
     'get_my_chats' : IDL.Func([], [IDL.Vec(Chat)], ['query']),

@@ -111,13 +111,13 @@ warning: fields `profile_pic` and `created_at` are never read
     |         ^^^^^^^^^^
 
 warning: `backend` (lib test) generated 9 warnings (run `cargo fix --lib -p backend --tests` to apply 2 suggestions)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.15s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.70s
      Running unittests src/lib.rs (target/debug/deps/backend-4bf858e2d1290d55)
 
 running 1 test
 test generate_candid ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
 
 Generating type declarations for canister backend:
   src/declarations/backend/backend.did.d.ts
@@ -126,6 +126,7 @@ Generating type declarations for canister backend:
 Building canisters...
 WARN: Cannot check for vulnerabilities in rust canisters because cargo-audit is not installed. Please run 'cargo install cargo-audit' so that vulnerabilities can be detected.
 Executing: cargo build --target wasm32-unknown-unknown --release -p backend --locked
+   Compiling backend v0.1.0 (/Users/heaven/Hackathons/rapido/src/backend)
 warning: unused imports: `BI` and `TxInfo`
  --> src/backend/src/user.rs:6:72
   |
@@ -238,4 +239,4 @@ warning: fields `profile_pic` and `created_at` are never read
     |         ^^^^^^^^^^
 
 warning: `backend` (lib) generated 9 warnings (run `cargo fix --lib -p backend` to apply 2 suggestions)
-    Finished `release` profile [optimized] target(s) in 0.23s
+    Finished `release` profile [optimized] target(s) in 6.15s

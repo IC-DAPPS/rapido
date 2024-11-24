@@ -472,6 +472,18 @@ pub async fn is_pay_id_available(pay_id: String) -> bool {
     }
 }
 
+#[query]
+pub async fn get_account_from_pay_id(pay_id: String) -> Option<Principal> {
+    
+    let caller = caller();
+
+    if is_user(&caller) || is_business(&caller) {
+        return PayIds::get(&pay_id);
+    }
+
+    None
+}
+
 struct TransferTx {
     from: Principal,
     to: Principal,
