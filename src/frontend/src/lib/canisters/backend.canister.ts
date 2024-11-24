@@ -20,6 +20,7 @@ import type {
 	PayIdOrPrincipal,
 	SignUpArg
 } from '@declarations/backend/backend.did';
+import { Principal } from '@dfinity/principal';
 import { Canister, createServices, type QueryParams, nonNullish } from '@dfinity/utils';
 
 export class BackendCanister extends Canister<BackendService> {
@@ -69,6 +70,15 @@ export class BackendCanister extends Canister<BackendService> {
 		const { is_pay_id_available } = this.caller({ certified });
 
 		return is_pay_id_available(payId);
+	};
+
+	getAccountFromPayId = ({
+		certified,
+		payId
+	}: IsPayIdAvailableParams): Promise<[] | [Principal]> => {
+		const { get_account_from_pay_id } = this.caller({ certified });
+
+		return get_account_from_pay_id(payId);
 	};
 
 	markMessageRead = (chatId: ChatId): Promise<MarkMessageReadResponse> => {

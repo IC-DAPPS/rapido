@@ -9,6 +9,7 @@
 	import { isPayIdAvailableSearch, signUpBusiness } from '@services/signup.service';
 	import { nonNullish } from '@dfinity/utils';
 	import type { ResultSuccess } from '$lib/types/utils';
+	import { sanitizePayId } from '@utils/payId.utils';
 
 	let { resultSuccess }: { resultSuccess: (result: ResultSuccess) => void } = $props();
 
@@ -31,7 +32,7 @@
 		enableNameError || enablePayIdError || loader || businsesCatergory === undefined
 	);
 
-	const seatchPayIdIsAvailable = async () => {
+	const searchPayIdIsAvailable = async () => {
 		if (payId.length < 3) return;
 
 		loader = true;
@@ -52,7 +53,7 @@
 
 	$effect(() => {
 		payId = sanitizePayId(payId);
-		const id = setTimeout(seatchPayIdIsAvailable, 500);
+		const id = setTimeout(searchPayIdIsAvailable, 500); // debounce
 
 		if (payId.length < 3) {
 			isPayIdAvail = false;
@@ -65,18 +66,8 @@
 
 	$effect(() => {
 		// Remove leading whitespace
-		name = name.trim();
+		name = name.replace(/^\s+/, '');
 	});
-
-	function sanitizePayId(input: string) {
-		// Convert to lowercase
-		let sanitizedInput = input.toLowerCase();
-
-		// Remove non-alphanumeric characters
-		sanitizedInput = sanitizedInput.replace(/[^a-z0-9]/g, '');
-
-		return sanitizedInput;
-	}
 
 	let isNameTouched = $state(false);
 	let isPayIdTouched = $state(false);
@@ -123,7 +114,7 @@
 			bind:value={payId}
 			type="text"
 			id="payid"
-			placeholder="Your Payment Identifier"
+			placeholder="example-101"
 			class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 pr-10 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
 			required
 			onchange={() => (isPayIdTouched = true)}

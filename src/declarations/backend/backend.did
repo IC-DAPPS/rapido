@@ -132,6 +132,7 @@ service : {
   create_chat : (PayIdOrPrincipal) -> (Result_1);
   fetch_data : () -> (Result_2) query;
   fetch_initial_data : () -> (Result_2) query;
+  get_account_from_pay_id : (text) -> (opt principal) query;
   get_business : () -> (Result_3) query;
   get_chat : (text) -> (opt Chat) query;
   get_my_chats : () -> (vec Chat) query;

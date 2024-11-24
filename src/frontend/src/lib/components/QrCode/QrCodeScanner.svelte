@@ -5,7 +5,13 @@
 	import { Loader } from 'lucide-svelte';
 	import { onDestroy, onMount } from 'svelte';
 
-	let { onScanSuccess = () => {}, onScanFailure = () => {} } = $props();
+	let {
+		onScanSuccess = () => {},
+		onScanFailure = () => {}
+	}: {
+		onScanSuccess: (content: string) => void;
+		onScanFailure: (errorMessage: string) => void;
+	} = $props();
 
 	let html5Qrcode: Html5Qrcode;
 
@@ -46,11 +52,19 @@
 		stop();
 	}
 
+	/**
+	 * This function is called immediately after the scanner is launched. because its looking for qr code for 1/10 Sec (fps = 10).
+	 * And most probably it will not find any qr code.
+	 * This will result calling onScanFailure immediately after the scanner is launched.
+	 *  So model component will be closed immediately since it also use onScanFailure callback event to close the model as well as notify user scanning failed using toast.
+	 *
+	 * To fix this we are using a timeout this will start on onMount then after 30 seconds it will enable onScanFailure callback.
+	 */
 	function qrCodeErrorCallback(errorMessage: string, error: Html5QrcodeError) {
 		// console.log(error);
 		// console.warn(`Code scan error = ${errorMessage}`);
-		//
-		onScanFailure(errorMessage);
+
+		if (enableOnScanFailure) onScanFailure(errorMessage);
 	}
 
 	async function stop() {
@@ -74,6 +88,14 @@
 	function getAspectRatio(): number {
 		return isMobileDevice() ? 0.5625 : 1.0; // 9:16 for mobile, 1:1 for larger screens
 	}
+
+	let enableOnScanFailure = false;
+
+	onMount(() => {
+		setTimeout(() => {
+			enableOnScanFailure = true;
+		}, 30000);
+	});
 </script>
 
 <article class="reader" id="reader"><Loader class="h-7 w-7 animate-spin" /></article>

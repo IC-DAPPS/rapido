@@ -1,5 +1,27 @@
 <script lang="ts">
+	import {
+		fetchBalance,
+		startAutoBalanceFetch,
+		stopAutoBalanceFetch
+	} from '@services/balance.service';
+	import { balance } from '@states/balance.svelte';
+	import { authStore } from '@stores/auth.store';
+	import { onDestroy, onMount } from 'svelte';
+
 	let { children } = $props();
+
+	onMount(async () => {
+		await fetchBalance();
+
+		startAutoBalanceFetch();
+	});
+
+	onDestroy(() => {
+		stopAutoBalanceFetch();
+	});
+
+	$inspect(balance);
+	$authStore.identity ? {} : stopAutoBalanceFetch();
 </script>
 
 <div class="flex h-full justify-center">

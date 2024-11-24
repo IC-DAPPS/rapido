@@ -31,8 +31,8 @@ export const createAgent = ({
 }): Promise<HttpAgent> =>
 	createAgentUtils({
 		identity,
-		host: HOST,
-		fetchRootKey: LOCAL,
+		host: 'https://icp-api.io', //HOST,
+		fetchRootKey: false, //LOCAL,
 		verifyQuerySignatures
 		// retryTimes: 3 //default
 	});

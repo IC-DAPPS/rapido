@@ -147,6 +147,7 @@ export interface _SERVICE {
   'create_chat' : ActorMethod<[PayIdOrPrincipal], Result_1>,
   'fetch_data' : ActorMethod<[], Result_2>,
   'fetch_initial_data' : ActorMethod<[], Result_2>,
+  'get_account_from_pay_id' : ActorMethod<[string], [] | [Principal]>,
   'get_business' : ActorMethod<[], Result_3>,
   'get_chat' : ActorMethod<[string], [] | [Chat]>,
   'get_my_chats' : ActorMethod<[], Array<Chat>>,
