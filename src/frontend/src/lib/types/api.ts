@@ -7,7 +7,9 @@ import type {
 	DataResponse,
 	FetchInitDataError,
 	Message,
+	RecordRegPayTxErr,
 	RecordTxErr,
+	RequestPayment,
 	SignUpError
 } from '@declarations/backend/backend.did';
 import type { Option } from './utils';
@@ -42,3 +44,13 @@ export type UserAddBusinessResponse = { Ok: BusinessInUser } | { Err: AddBusines
 export interface IsPayIdAvailableParams extends QueryParams {
 	payId: string;
 }
+
+export interface PaymentRequestParams {
+	chatId: ChatId;
+	amount: bigint;
+	note: Option<string>;
+}
+
+export type PaymentRequestResponse = { Ok: RequestPayment } | { Err: AddMessageErr };
+
+export type RecordRequestPaymentResponse = { Ok: null } | { Err: RecordRegPayTxErr };

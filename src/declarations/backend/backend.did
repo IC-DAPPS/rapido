@@ -70,25 +70,53 @@ type Message = record {
   timestamp : nat64;
 };
 type MessageOrTransaction = variant {
+  RequestPayment : RequestPayment;
   Transaction : Transaction;
   Message : Message;
 };
 type PayIdOrPrincipal = variant { PayId : text; Principal : principal };
+type RecordRegPayTxErr = variant {
+  RequestPaymentNotFound;
+  AlreadyRecorded;
+  AccountNotFound;
+  InterCanisterCall : text;
+  InvalidTransaction : text;
+  ChatNotFound;
+  NotAParticipant;
+  BothAccountsNotFound : record { to : principal; from : principal };
+};
+type RecordReqPayArg = record {
+  tx_id : nat;
+  chat_id : text;
+  message_index : nat64;
+};
 type RecordTxErr = variant {
   AlreadyRecorded;
   InterCanisterCall : text;
   InvalidTransaction : text;
   BothAccountsNotFound : record { to : principal; from : principal };
-  FailedTo;
+};
+type ReqPayArg = record { note : opt text; chat_id : text; amount : nat };
+type RequestPayment = record {
+  read_by : vec text;
+  tx_id : opt nat;
+  note : opt text;
+  requested_at : nat64;
+  sender_id : text;
+  payment_at : opt nat64;
+  amount : nat;
+  expires_at : nat64;
 };
 type Result = variant { Ok : Message; Err : AddMessageErr };
 type Result_1 = variant { Ok : Chat; Err : CreateChatErr };
 type Result_2 = variant { Ok : DataResponse; Err : FetchInitDataError };
 type Result_3 = variant { Ok : Business; Err : GetBusinessError };
 type Result_4 = variant { Ok; Err : AddMessageErr };
-type Result_5 = variant { Ok; Err : RecordTxErr };
-type Result_6 = variant { Ok; Err : SignUpError };
-type Result_7 = variant { Ok : BusinessInUser; Err : AddBusinessError };
+type Result_5 = variant { Ok : RequestPayment; Err : AddMessageErr };
+type Result_6 = variant { Ok; Err : RecordRegPayTxErr };
+type Result_7 = variant { Ok; Err : RecordTxErr };
+type Result_8 = variant { Ok; Err : SignUpError };
+type Result_9 = variant { Ok : BusinessInUser; Err : AddBusinessError };
 type SignUpArg = variant {
   User : UserSignUpArgs;
   Business : BusinessSignUpArgs;
@@ -139,7 +167,9 @@ service : {
   get_user : () -> (opt User) query;
   is_pay_id_available : (text) -> (bool) query;
   mark_message_read : (text) -> (Result_4);
-  record_xfer_transaction : (nat, opt text) -> (Result_5);
-  sign_up : (SignUpArg) -> (Result_6);
-  user_add_business : (PayIdOrPrincipal) -> (Result_7);
+  payment_request_message : (ReqPayArg) -> (Result_5);
+  record_request_payment : (RecordReqPayArg) -> (Result_6);
+  record_xfer_transaction : (nat, opt text) -> (Result_7);
+  sign_up : (SignUpArg) -> (Result_8);
+  user_add_business : (PayIdOrPrincipal) -> (Result_9);
 }

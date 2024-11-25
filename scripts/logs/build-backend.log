@@ -1,11 +1,16 @@
-   Compiling backend v0.1.0 (/Users/heaven/Hackathons/rapido/src/backend)
-warning: unused imports: `BI` and `TxInfo`
- --> src/backend/src/user.rs:6:72
+warning: unused import: `RecordTxErr`
+ --> src/backend/src/user.rs:4:5
   |
-6 |     is_payid_exist, PayIds, StoreHistory, TransactionEntry, TxHistory, TxInfo, TxKind, BI,
-  |                                                                        ^^^^^^          ^^
+4 |     RecordTxErr, RequestPaymentError, SignUpError,
+  |     ^^^^^^^^^^^
   |
   = note: `#[warn(unused_imports)]` on by default
+
+warning: unused imports: `BI` and `TxInfo`
+ --> src/backend/src/user.rs:7:72
+  |
+7 |     is_payid_exist, PayIds, StoreHistory, TransactionEntry, TxHistory, TxInfo, TxKind, BI,
+  |                                                                        ^^^^^^          ^^
 
 warning: unused imports: `Decode` and `Encode`
  --> src/backend/src/ck_btc_ledger.rs:1:32
@@ -37,87 +42,93 @@ warning: field `created_at` is never read
    |         ^^^^^^^^^^
 
 warning: associated functions `get_mut`, `remove`, `contains_key`, and `len` are never used
-   --> src/backend/src/user.rs:105:8
+   --> src/backend/src/user.rs:130:8
     |
-100 | impl Chats {
+125 | impl Chats {
     | ---------- associated functions in this implementation
 ...
-105 |     fn get_mut(key: &ChatId) -> Option<Chat> {
+130 |     fn get_mut(key: &ChatId) -> Option<Chat> {
     |        ^^^^^^^
 ...
-113 |     fn remove(key: &ChatId) -> Option<Chat> {
+138 |     fn remove(key: &ChatId) -> Option<Chat> {
     |        ^^^^^^
 ...
-117 |     fn contains_key(key: &ChatId) -> bool {
+142 |     fn contains_key(key: &ChatId) -> bool {
     |        ^^^^^^^^^^^^
 ...
-121 |     fn len() -> u64 {
+146 |     fn len() -> u64 {
     |        ^^^
 
 warning: associated functions `get_mut` and `remove` are never used
-   --> src/backend/src/user.rs:172:8
+   --> src/backend/src/user.rs:197:8
     |
-167 | impl Users {
+192 | impl Users {
     | ---------- associated functions in this implementation
 ...
-172 |     fn get_mut(key: &Principal) -> Option<User> {
+197 |     fn get_mut(key: &Principal) -> Option<User> {
     |        ^^^^^^^
 ...
-180 |     fn remove(key: Principal) -> Option<User> {
+205 |     fn remove(key: Principal) -> Option<User> {
     |        ^^^^^^
 
 warning: associated functions `get_mut`, `remove`, `contains_key`, and `len` are never used
-   --> src/backend/src/user.rs:228:8
+   --> src/backend/src/user.rs:253:8
     |
-223 | impl BusinessInUser {
+248 | impl BusinessInUser {
     | ------------------- associated functions in this implementation
 ...
-228 |     fn get_mut(key: &String) -> Option<BusinessInUser> {
+253 |     fn get_mut(key: &String) -> Option<BusinessInUser> {
     |        ^^^^^^^
 ...
-236 |     fn remove(key: &String) -> Option<BusinessInUser> {
+261 |     fn remove(key: &String) -> Option<BusinessInUser> {
     |        ^^^^^^
 ...
-240 |     fn contains_key(key: &String) -> bool {
+265 |     fn contains_key(key: &String) -> bool {
     |        ^^^^^^^^^^^^
 ...
-244 |     fn len() -> u64 {
+269 |     fn len() -> u64 {
     |        ^^^
 
 warning: associated functions `get_mut`, `remove`, and `contains_key` are never used
-   --> src/backend/src/user.rs:254:8
+   --> src/backend/src/user.rs:279:8
     |
-249 | impl StoreHistory {
+274 | impl StoreHistory {
     | ----------------- associated functions in this implementation
 ...
-254 |     fn get_mut(key: &Principal) -> Option<StoreHistory> {
+279 |     fn get_mut(key: &Principal) -> Option<StoreHistory> {
     |        ^^^^^^^
 ...
-262 |     fn remove(key: Principal) -> Option<StoreHistory> {
+287 |     fn remove(key: Principal) -> Option<StoreHistory> {
     |        ^^^^^^
 ...
-266 |     fn contains_key(key: &Principal) -> bool {
+291 |     fn contains_key(key: &Principal) -> bool {
     |        ^^^^^^^^^^^^
 
 warning: fields `profile_pic` and `created_at` are never read
-   --> src/backend/src/user.rs:291:9
+   --> src/backend/src/user.rs:316:9
     |
-288 | pub struct UserMetadata {
+313 | pub struct UserMetadata {
     |            ------------ fields in this struct
 ...
-291 |     pub profile_pic: String,
+316 |     pub profile_pic: String,
     |         ^^^^^^^^^^^
-292 |     pub created_at: u64,
+317 |     pub created_at: u64,
     |         ^^^^^^^^^^
 
-warning: `backend` (lib test) generated 9 warnings (run `cargo fix --lib -p backend --tests` to apply 2 suggestions)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.70s
+warning: constant `A_DAY` is never used
+    --> src/backend/src/user.rs:1257:11
+     |
+1257 |     const A_DAY: u64 = 86_400;
+     |           ^^^^^
+
+warning: `backend` (lib test) generated 11 warnings (run `cargo fix --lib -p backend --tests` to apply 3 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
      Running unittests src/lib.rs (target/debug/deps/backend-4bf858e2d1290d55)
 
 running 1 test
 test generate_candid ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 Generating type declarations for canister backend:
   src/declarations/backend/backend.did.d.ts
@@ -126,14 +137,19 @@ Generating type declarations for canister backend:
 Building canisters...
 WARN: Cannot check for vulnerabilities in rust canisters because cargo-audit is not installed. Please run 'cargo install cargo-audit' so that vulnerabilities can be detected.
 Executing: cargo build --target wasm32-unknown-unknown --release -p backend --locked
-   Compiling backend v0.1.0 (/Users/heaven/Hackathons/rapido/src/backend)
-warning: unused imports: `BI` and `TxInfo`
- --> src/backend/src/user.rs:6:72
+warning: unused import: `RecordTxErr`
+ --> src/backend/src/user.rs:4:5
   |
-6 |     is_payid_exist, PayIds, StoreHistory, TransactionEntry, TxHistory, TxInfo, TxKind, BI,
-  |                                                                        ^^^^^^          ^^
+4 |     RecordTxErr, RequestPaymentError, SignUpError,
+  |     ^^^^^^^^^^^
   |
   = note: `#[warn(unused_imports)]` on by default
+
+warning: unused imports: `BI` and `TxInfo`
+ --> src/backend/src/user.rs:7:72
+  |
+7 |     is_payid_exist, PayIds, StoreHistory, TransactionEntry, TxHistory, TxInfo, TxKind, BI,
+  |                                                                        ^^^^^^          ^^
 
 warning: unused imports: `Decode` and `Encode`
  --> src/backend/src/ck_btc_ledger.rs:1:32
@@ -165,78 +181,84 @@ warning: field `created_at` is never read
    |         ^^^^^^^^^^
 
 warning: associated functions `get_mut`, `remove`, `contains_key`, and `len` are never used
-   --> src/backend/src/user.rs:105:8
+   --> src/backend/src/user.rs:130:8
     |
-100 | impl Chats {
+125 | impl Chats {
     | ---------- associated functions in this implementation
 ...
-105 |     fn get_mut(key: &ChatId) -> Option<Chat> {
+130 |     fn get_mut(key: &ChatId) -> Option<Chat> {
     |        ^^^^^^^
 ...
-113 |     fn remove(key: &ChatId) -> Option<Chat> {
+138 |     fn remove(key: &ChatId) -> Option<Chat> {
     |        ^^^^^^
 ...
-117 |     fn contains_key(key: &ChatId) -> bool {
+142 |     fn contains_key(key: &ChatId) -> bool {
     |        ^^^^^^^^^^^^
 ...
-121 |     fn len() -> u64 {
+146 |     fn len() -> u64 {
     |        ^^^
 
 warning: associated functions `get_mut` and `remove` are never used
-   --> src/backend/src/user.rs:172:8
+   --> src/backend/src/user.rs:197:8
     |
-167 | impl Users {
+192 | impl Users {
     | ---------- associated functions in this implementation
 ...
-172 |     fn get_mut(key: &Principal) -> Option<User> {
+197 |     fn get_mut(key: &Principal) -> Option<User> {
     |        ^^^^^^^
 ...
-180 |     fn remove(key: Principal) -> Option<User> {
+205 |     fn remove(key: Principal) -> Option<User> {
     |        ^^^^^^
 
 warning: associated functions `get_mut`, `remove`, `contains_key`, and `len` are never used
-   --> src/backend/src/user.rs:228:8
+   --> src/backend/src/user.rs:253:8
     |
-223 | impl BusinessInUser {
+248 | impl BusinessInUser {
     | ------------------- associated functions in this implementation
 ...
-228 |     fn get_mut(key: &String) -> Option<BusinessInUser> {
+253 |     fn get_mut(key: &String) -> Option<BusinessInUser> {
     |        ^^^^^^^
 ...
-236 |     fn remove(key: &String) -> Option<BusinessInUser> {
+261 |     fn remove(key: &String) -> Option<BusinessInUser> {
     |        ^^^^^^
 ...
-240 |     fn contains_key(key: &String) -> bool {
+265 |     fn contains_key(key: &String) -> bool {
     |        ^^^^^^^^^^^^
 ...
-244 |     fn len() -> u64 {
+269 |     fn len() -> u64 {
     |        ^^^
 
 warning: associated functions `get_mut`, `remove`, and `contains_key` are never used
-   --> src/backend/src/user.rs:254:8
+   --> src/backend/src/user.rs:279:8
     |
-249 | impl StoreHistory {
+274 | impl StoreHistory {
     | ----------------- associated functions in this implementation
 ...
-254 |     fn get_mut(key: &Principal) -> Option<StoreHistory> {
+279 |     fn get_mut(key: &Principal) -> Option<StoreHistory> {
     |        ^^^^^^^
 ...
-262 |     fn remove(key: Principal) -> Option<StoreHistory> {
+287 |     fn remove(key: Principal) -> Option<StoreHistory> {
     |        ^^^^^^
 ...
-266 |     fn contains_key(key: &Principal) -> bool {
+291 |     fn contains_key(key: &Principal) -> bool {
     |        ^^^^^^^^^^^^
 
 warning: fields `profile_pic` and `created_at` are never read
-   --> src/backend/src/user.rs:291:9
+   --> src/backend/src/user.rs:316:9
     |
-288 | pub struct UserMetadata {
+313 | pub struct UserMetadata {
     |            ------------ fields in this struct
 ...
-291 |     pub profile_pic: String,
+316 |     pub profile_pic: String,
     |         ^^^^^^^^^^^
-292 |     pub created_at: u64,
+317 |     pub created_at: u64,
     |         ^^^^^^^^^^
 
-warning: `backend` (lib) generated 9 warnings (run `cargo fix --lib -p backend` to apply 2 suggestions)
-    Finished `release` profile [optimized] target(s) in 6.15s
+warning: constant `A_DAY` is never used
+    --> src/backend/src/user.rs:1257:11
+     |
+1257 |     const A_DAY: u64 = 86_400;
+     |           ^^^^^
+
+warning: `backend` (lib) generated 11 warnings (run `cargo fix --lib -p backend` to apply 3 suggestions)
+    Finished `release` profile [optimized] target(s) in 0.03s

@@ -52,3 +52,22 @@ pub enum RecordTxErr {
 pub enum FetchInitDataError {
     AnonymousCaller,
 }
+
+#[derive(candid::CandidType, Clone, Serialize, Debug, Deserialize)]
+pub enum RequestPaymentError {
+    ChatNotFound,
+    AccountNotFound,
+    NotAParticipant,
+}
+
+#[derive(candid::CandidType, Clone, Serialize, Debug, Deserialize)]
+pub enum RecordRegPayTxErr {
+    InterCanisterCall(String),
+    InvalidTransaction(String),
+    BothAccountsNotFound { from: Principal, to: Principal },
+    AlreadyRecorded,
+    ChatNotFound,
+    AccountNotFound,
+    RequestPaymentNotFound,
+    NotAParticipant
+}

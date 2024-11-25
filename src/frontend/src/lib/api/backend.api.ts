@@ -7,6 +7,9 @@ import type {
 	FetchDataResponse,
 	IsPayIdAvailableParams,
 	MarkMessageReadResponse,
+	PaymentRequestParams,
+	PaymentRequestResponse,
+	RecordRequestPaymentResponse,
 	RecordXferParams,
 	RecordXferTxResponse,
 	SignUpResponse,
@@ -14,7 +17,12 @@ import type {
 } from '$lib/types/api';
 import type { CommonCanisterApiFunctionParams } from '$lib/types/canister';
 import { BACKEND_CANISTER_ID } from '@constants/app.constants';
-import type { Chat, PayIdOrPrincipal, SignUpArg } from '@declarations/backend/backend.did';
+import type {
+	Chat,
+	PayIdOrPrincipal,
+	RecordReqPayArg,
+	SignUpArg
+} from '@declarations/backend/backend.did';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, type QueryParams } from '@dfinity/utils';
@@ -124,6 +132,28 @@ export const userAddBusiness = async ({
 }>): Promise<UserAddBusinessResponse> => {
 	const { userAddBusiness } = await backendCanister({ identity });
 	return userAddBusiness(payIdOrPrincipal);
+};
+
+export const paymentRequestMessage = async ({
+	identity,
+	nullishIdentityErrorMessage,
+	canisterId,
+	...args
+}: CommonCanisterApiFunctionParams<PaymentRequestParams>): Promise<PaymentRequestResponse> => {
+	const { paymentRequestMessage } = await backendCanister({ identity });
+
+	return paymentRequestMessage(args);
+};
+
+export const recordRequestPayment = async ({
+	identity,
+	nullishIdentityErrorMessage,
+	canisterId,
+	...args
+}: CommonCanisterApiFunctionParams<RecordReqPayArg>): Promise<RecordRequestPaymentResponse> => {
+	const { recordRequestPayment } = await backendCanister({ identity });
+
+	return recordRequestPayment(args);
 };
 
 const backendCanister = async ({
