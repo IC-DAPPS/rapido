@@ -1,6 +1,7 @@
 use crate::business::{self, is_business, BusinessCategory};
 use crate::error::{
-    AddBusinessError, AddMessageErr, CreateChatErr, MarkMessageReadErr, SignUpError,
+    AddBusinessError, AddMessageErr, CreateChatErr, MarkMessageReadErr, RecordRegPayTxErr,
+    RecordTxErr, RequestPaymentError, SignUpError,
 };
 use crate::{
     is_payid_exist, PayIds, StoreHistory, TransactionEntry, TxHistory, TxInfo, TxKind, BI,
@@ -57,11 +58,35 @@ pub struct Transaction {
 }
 
 #[derive(
+    candid::CandidType,
+    Clone,
+    Serialize,
+    Deserialize,
+    Default,
+    Debug,
+    Eq,
+    PartialEq,
+    Ord,
+    PartialOrd,
+)]
+pub struct RequestPayment {
+    sender_id: PayId, // not transaction sender id . its the one who is requesting payment
+    requested_at: u64,
+    amount: candid::Nat,
+    payment_at: Option<u64>,
+    tx_id: Option<candid::Nat>,
+    expires_at: u64,
+    note: Option<String>,
+    read_by: Vec<PayId>, // Tracked read status
+}
+
+#[derive(
     candid::CandidType, Clone, Serialize, Deserialize, Debug, Eq, PartialEq, Ord, PartialOrd,
 )]
 pub enum MessageOrTransaction {
     Message(Message),
     Transaction(Transaction),
+    RequestPayment(RequestPayment),
 }
 
 pub type ChatId = String;
@@ -543,6 +568,13 @@ pub fn mark_message_read(chat_id: ChatId) -> Result<(), MarkMessageReadErr> {
                                     tx.read_by.push(user.pay_id.clone());
                                 }
                             }
+                            MessageOrTransaction::RequestPayment(req) => {
+                                if req.read_by.contains(&user.pay_id) {
+                                    break;
+                                } else {
+                                    req.read_by.push(user.pay_id.clone());
+                                }
+                            }
                         }
                     }
 
@@ -993,4 +1025,242 @@ pub fn fetch_user_data() -> UserData {
 
 pub fn get_user() -> Option<User> {
     Users::get(&caller())
+}
+
+#[derive(candid::CandidType, Clone, Serialize, Debug, Deserialize)]
+pub struct ReqPayArg {
+    chat_id: ChatId,
+    amount: Nat,
+    note: Option<String>,
+}
+
+pub fn request_payment(
+    ReqPayArg {
+        chat_id,
+        amount,
+        note,
+    }: ReqPayArg,
+) -> Result<RequestPayment, RequestPaymentError> {
+    let caller = caller();
+
+    //requester
+    let mut user = match Users::get(&caller) {
+        Some(user) => user,
+        None => return Err(RequestPaymentError::AccountNotFound),
+    };
+
+    let mut chat = match Chats::get(&chat_id) {
+        Some(chat) => chat,
+        None => return Err(RequestPaymentError::ChatNotFound),
+    };
+
+    if !chat.participants.contains(&user.pay_id) {
+        return Err(RequestPaymentError::NotAParticipant);
+    }
+
+    let pre_last_activity = chat.last_activity;
+    let timestamp = time();
+    let request_payment = RequestPayment {
+        sender_id: user.pay_id.clone(), // requester payId
+        amount,
+        note,
+        requested_at: timestamp,
+        payment_at: None,
+        tx_id: None,
+        expires_at: get_24h_expiry(timestamp),
+        read_by: vec![user.pay_id.clone()],
+    };
+
+    chat.messages.push(MessageOrTransaction::RequestPayment(
+        request_payment.clone(),
+    ));
+
+    chat.last_activity = timestamp;
+
+    // Update the ordering of the chat in the user's BTreeSet
+    user.my_chats.remove(&(pre_last_activity, chat_id.clone()));
+    user.my_chats.insert((chat.last_activity, chat_id.clone()));
+
+    // Update the ordering of the chat in the user's BTreeSet
+    for pay_id in &chat.participants {
+        if pay_id == &user.pay_id {
+            continue;
+        }
+        let principal = match PayIds::get(pay_id) {
+            Some(principal) => principal,
+            None => continue,
+        };
+        match Users::get(&principal) {
+            Some(mut participant) => {
+                participant
+                    .my_chats
+                    .remove(&(pre_last_activity, chat_id.clone()));
+                participant
+                    .my_chats
+                    .insert((chat.last_activity, chat_id.clone()));
+                Users::insert(principal, participant);
+            }
+            None => continue,
+        }
+    }
+
+    Chats::insert(chat_id, chat);
+    Users::insert(caller, user);
+
+    Ok(request_payment)
+}
+
+pub struct RecordReqPayTxArg {
+    pub from: Principal,
+    pub to: Principal,
+    pub timestamp: u64,
+    pub amount: Nat,
+    pub tx_id: Nat,
+    pub chat_id: ChatId,
+    pub message_index: usize,
+    // is_read_by_sender: bool,
+}
+
+pub fn record_request_payment(
+    RecordReqPayTxArg {
+        from,
+        to,
+        timestamp,
+        amount,
+        tx_id,
+        chat_id,
+        message_index,
+    }: RecordReqPayTxArg,
+) -> Result<(), RecordRegPayTxErr> {
+
+
+    let mut from_user = match Users::get(&from) {
+        Some(user) => user,
+        None => return Err(RecordRegPayTxErr::AccountNotFound),
+    };
+
+    let mut to_user = match Users::get(&to) {
+        Some(user) => user,
+        None => return Err(RecordRegPayTxErr::AccountNotFound),
+    };
+
+    // No need to pass chat Id
+    // let chat_id = create_key(&from_user.pay_id, &to_user.pay_id);
+
+    let mut chat = match Chats::get(&chat_id) {
+        Some(chat) => chat,
+        None => return Err(RecordRegPayTxErr::ChatNotFound),
+    };
+
+    if !chat.participants.contains(&from_user.pay_id) {
+        return Err(RecordRegPayTxErr::NotAParticipant);
+    }
+
+    if !chat.participants.contains(&to_user.pay_id) {
+        return Err(RecordRegPayTxErr::NotAParticipant);
+    }
+
+    let pre_last_activity = chat.last_activity;
+
+    let req_pay    = match chat.messages.get_mut(message_index){
+        Some(MessageOrTransaction::RequestPayment(req_pay)) => req_pay,
+       _ => return Err(RecordRegPayTxErr::RequestPaymentNotFound),
+    };
+
+    /* We will add a 30 miniutes (1,800,000,000,000 nanoseconds) buffer to expiry time,
+     Incase if user send payment in a time closes  to expiry time this will condition will return Expired error
+     */
+    if (req_pay.expires_at + 1_800_000_000_000) < timestamp{
+        return Err(RecordRegPayTxErr::InvalidTransaction("Expired payment request".to_string()))
+    }
+
+    if req_pay.amount != amount{
+        return Err(RecordRegPayTxErr::InvalidTransaction("Requested Amount is not equal to actual amount".to_string()));
+    }
+
+    // Payment requester is sender_id, 'to' is the payment receiver who requested payment
+    if &req_pay.sender_id != &to_user.pay_id{
+        return  Err(RecordRegPayTxErr::InvalidTransaction(format!("Requester {} is not the payment receiver {}", req_pay.sender_id, to_user.pay_id)));
+    }
+
+    req_pay.payment_at = Some(timestamp);
+    req_pay.tx_id = Some(tx_id.clone());
+
+    chat.last_activity = pre_last_activity;
+
+    from_user
+        .my_chats
+        .remove(&(pre_last_activity, chat_id.clone()));
+    from_user
+        .my_chats
+        .insert((chat.last_activity, chat_id.clone()));
+
+    to_user
+        .my_chats
+        .remove(&(pre_last_activity, chat_id.clone()));
+    to_user
+        .my_chats
+        .insert((chat.last_activity, chat_id.clone()));
+
+        let tx_entry_from_user = TransactionEntry {
+            kind: TxKind::Sends,            // for from its sending
+            name: to_user.name.clone(),     // received by to
+            pay_id: to_user.pay_id.clone(), // received by to
+            tx_id: tx_id.clone(),
+            timestamp,
+            amount: amount.clone(),
+            note: req_pay.note.clone(),
+        };
+    
+        let tx_entry_to_user = TransactionEntry {
+            kind: TxKind::Receive,            // for to its receiveing
+            name: from_user.name.clone(),     // send by from
+            pay_id: from_user.pay_id.clone(), // send by from
+            tx_id: tx_id.clone(),
+            timestamp,
+            amount,
+            note: req_pay.note.clone(),
+        };
+
+
+        match StoreHistory::get_history(&from) {
+            Some(mut tx_history) => {
+                tx_history.push(tx_entry_from_user);
+                StoreHistory::insert_history(from, tx_history);
+            }
+            None => {
+                let tx_history = vec![tx_entry_from_user];
+                StoreHistory::insert_history(from, tx_history);
+            }
+        }
+    
+        match StoreHistory::get_history(&to) {
+            Some(mut tx_history) => {
+                tx_history.push(tx_entry_to_user);
+                StoreHistory::insert_history(from, tx_history);
+            }
+            None => {
+                let tx_history = vec![tx_entry_to_user];
+                StoreHistory::insert_history(from, tx_history);
+            }
+        }
+
+
+        Chats::insert(chat_id, chat);
+        Users::insert(from, from_user);
+        Users::insert(to, to_user);
+
+    Ok(())
+}
+
+fn get_24h_expiry(nanosec_time: u64) -> u64 {
+    const A_DAY: u64 = 86_400;
+    const NANO_SEC: u64 = 1_000_000_000;
+
+    let in_sec = nanosec_time / NANO_SEC;
+    let seconds_in_time = in_sec % 60;
+
+    let next_24h = in_sec - seconds_in_time + 86_400;
+
+    next_24h * NANO_SEC
 }

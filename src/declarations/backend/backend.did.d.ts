@@ -74,15 +74,43 @@ export interface Message {
   'sender_id' : string,
   'timestamp' : bigint,
 }
-export type MessageOrTransaction = { 'Transaction' : Transaction } |
+export type MessageOrTransaction = { 'RequestPayment' : RequestPayment } |
+  { 'Transaction' : Transaction } |
   { 'Message' : Message };
 export type PayIdOrPrincipal = { 'PayId' : string } |
   { 'Principal' : Principal };
+export type RecordRegPayTxErr = { 'RequestPaymentNotFound' : null } |
+  { 'AlreadyRecorded' : null } |
+  { 'AccountNotFound' : null } |
+  { 'InterCanisterCall' : string } |
+  { 'InvalidTransaction' : string } |
+  { 'ChatNotFound' : null } |
+  { 'NotAParticipant' : null } |
+  { 'BothAccountsNotFound' : { 'to' : Principal, 'from' : Principal } };
+export interface RecordReqPayArg {
+  'tx_id' : bigint,
+  'chat_id' : string,
+  'message_index' : bigint,
+}
 export type RecordTxErr = { 'AlreadyRecorded' : null } |
   { 'InterCanisterCall' : string } |
   { 'InvalidTransaction' : string } |
-  { 'BothAccountsNotFound' : { 'to' : Principal, 'from' : Principal } } |
-  { 'FailedTo' : null };
+  { 'BothAccountsNotFound' : { 'to' : Principal, 'from' : Principal } };
+export interface ReqPayArg {
+  'note' : [] | [string],
+  'chat_id' : string,
+  'amount' : bigint,
+}
+export interface RequestPayment {
+  'read_by' : Array<string>,
+  'tx_id' : [] | [bigint],
+  'note' : [] | [string],
+  'requested_at' : bigint,
+  'sender_id' : string,
+  'payment_at' : [] | [bigint],
+  'amount' : bigint,
+  'expires_at' : bigint,
+}
 export type Result = { 'Ok' : Message } |
   { 'Err' : AddMessageErr };
 export type Result_1 = { 'Ok' : Chat } |
@@ -93,11 +121,15 @@ export type Result_3 = { 'Ok' : Business } |
   { 'Err' : GetBusinessError };
 export type Result_4 = { 'Ok' : null } |
   { 'Err' : AddMessageErr };
-export type Result_5 = { 'Ok' : null } |
-  { 'Err' : RecordTxErr };
+export type Result_5 = { 'Ok' : RequestPayment } |
+  { 'Err' : AddMessageErr };
 export type Result_6 = { 'Ok' : null } |
+  { 'Err' : RecordRegPayTxErr };
+export type Result_7 = { 'Ok' : null } |
+  { 'Err' : RecordTxErr };
+export type Result_8 = { 'Ok' : null } |
   { 'Err' : SignUpError };
-export type Result_7 = { 'Ok' : BusinessInUser } |
+export type Result_9 = { 'Ok' : BusinessInUser } |
   { 'Err' : AddBusinessError };
 export type SignUpArg = { 'User' : UserSignUpArgs } |
   { 'Business' : BusinessSignUpArgs };
@@ -154,9 +186,11 @@ export interface _SERVICE {
   'get_user' : ActorMethod<[], [] | [User]>,
   'is_pay_id_available' : ActorMethod<[string], boolean>,
   'mark_message_read' : ActorMethod<[string], Result_4>,
-  'record_xfer_transaction' : ActorMethod<[bigint, [] | [string]], Result_5>,
-  'sign_up' : ActorMethod<[SignUpArg], Result_6>,
-  'user_add_business' : ActorMethod<[PayIdOrPrincipal], Result_7>,
+  'payment_request_message' : ActorMethod<[ReqPayArg], Result_5>,
+  'record_request_payment' : ActorMethod<[RecordReqPayArg], Result_6>,
+  'record_xfer_transaction' : ActorMethod<[bigint, [] | [string]], Result_7>,
+  'sign_up' : ActorMethod<[SignUpArg], Result_8>,
+  'user_add_business' : ActorMethod<[PayIdOrPrincipal], Result_9>,
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

@@ -7,6 +7,9 @@ import type {
 	FetchDataResponse,
 	IsPayIdAvailableParams,
 	MarkMessageReadResponse,
+	PaymentRequestParams,
+	PaymentRequestResponse,
+	RecordRequestPaymentResponse,
 	RecordXferParams,
 	RecordXferTxResponse,
 	SignUpResponse,
@@ -18,6 +21,8 @@ import type {
 	_SERVICE as BackendService,
 	Chat,
 	PayIdOrPrincipal,
+	RecordReqPayArg,
+	ReqPayArg,
 	SignUpArg
 } from '@declarations/backend/backend.did';
 import { Principal } from '@dfinity/principal';
@@ -103,6 +108,26 @@ export class BackendCanister extends Canister<BackendService> {
 		const { user_add_business } = this.caller({ certified: true });
 
 		return user_add_business(payIdOrPrincipal);
+	};
+
+	paymentRequestMessage = ({
+		chatId,
+		amount,
+		note
+	}: PaymentRequestParams): Promise<PaymentRequestResponse> => {
+		const { payment_request_message } = this.caller({ certified: true });
+
+		return payment_request_message({
+			chat_id: chatId,
+			amount,
+			note: nonNullish(note) ? [note] : []
+		});
+	};
+
+	recordRequestPayment = (arg: RecordReqPayArg): Promise<RecordRequestPaymentResponse> => {
+		const { record_request_payment } = this.caller({ certified: true });
+
+		return record_request_payment(arg);
 	};
 
 	// getBusiness = () => {};//query

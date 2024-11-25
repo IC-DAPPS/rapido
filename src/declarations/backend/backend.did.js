@@ -15,6 +15,16 @@ export const idlFactory = ({ IDL }) => {
     'PayId' : IDL.Text,
     'Principal' : IDL.Principal,
   });
+  const RequestPayment = IDL.Record({
+    'read_by' : IDL.Vec(IDL.Text),
+    'tx_id' : IDL.Opt(IDL.Nat),
+    'note' : IDL.Opt(IDL.Text),
+    'requested_at' : IDL.Nat64,
+    'sender_id' : IDL.Text,
+    'payment_at' : IDL.Opt(IDL.Nat64),
+    'amount' : IDL.Nat,
+    'expires_at' : IDL.Nat64,
+  });
   const Transaction = IDL.Record({
     'read_by' : IDL.Vec(IDL.Text),
     'tx_id' : IDL.Nat,
@@ -24,6 +34,7 @@ export const idlFactory = ({ IDL }) => {
     'amount' : IDL.Nat,
   });
   const MessageOrTransaction = IDL.Variant({
+    'RequestPayment' : RequestPayment,
     'Transaction' : Transaction,
     'Message' : Message,
   });
@@ -119,6 +130,34 @@ export const idlFactory = ({ IDL }) => {
   const GetBusinessError = IDL.Variant({ 'AccountNotFound' : IDL.Null });
   const Result_3 = IDL.Variant({ 'Ok' : Business, 'Err' : GetBusinessError });
   const Result_4 = IDL.Variant({ 'Ok' : IDL.Null, 'Err' : AddMessageErr });
+  const ReqPayArg = IDL.Record({
+    'note' : IDL.Opt(IDL.Text),
+    'chat_id' : IDL.Text,
+    'amount' : IDL.Nat,
+  });
+  const Result_5 = IDL.Variant({
+    'Ok' : RequestPayment,
+    'Err' : AddMessageErr,
+  });
+  const RecordReqPayArg = IDL.Record({
+    'tx_id' : IDL.Nat,
+    'chat_id' : IDL.Text,
+    'message_index' : IDL.Nat64,
+  });
+  const RecordRegPayTxErr = IDL.Variant({
+    'RequestPaymentNotFound' : IDL.Null,
+    'AlreadyRecorded' : IDL.Null,
+    'AccountNotFound' : IDL.Null,
+    'InterCanisterCall' : IDL.Text,
+    'InvalidTransaction' : IDL.Text,
+    'ChatNotFound' : IDL.Null,
+    'NotAParticipant' : IDL.Null,
+    'BothAccountsNotFound' : IDL.Record({
+      'to' : IDL.Principal,
+      'from' : IDL.Principal,
+    }),
+  });
+  const Result_6 = IDL.Variant({ 'Ok' : IDL.Null, 'Err' : RecordRegPayTxErr });
   const RecordTxErr = IDL.Variant({
     'AlreadyRecorded' : IDL.Null,
     'InterCanisterCall' : IDL.Text,
@@ -127,9 +166,8 @@ export const idlFactory = ({ IDL }) => {
       'to' : IDL.Principal,
       'from' : IDL.Principal,
     }),
-    'FailedTo' : IDL.Null,
   });
-  const Result_5 = IDL.Variant({ 'Ok' : IDL.Null, 'Err' : RecordTxErr });
+  const Result_7 = IDL.Variant({ 'Ok' : IDL.Null, 'Err' : RecordTxErr });
   const UserSignUpArgs = IDL.Record({
     'name' : IDL.Text,
     'profile_pic' : IDL.Text,
@@ -150,12 +188,12 @@ export const idlFactory = ({ IDL }) => {
     'PayIdExist' : IDL.Null,
     'AnonymousCaller' : IDL.Null,
   });
-  const Result_6 = IDL.Variant({ 'Ok' : IDL.Null, 'Err' : SignUpError });
+  const Result_8 = IDL.Variant({ 'Ok' : IDL.Null, 'Err' : SignUpError });
   const AddBusinessError = IDL.Variant({
     'AccountNotFound' : IDL.Null,
     'BusinessNotFound' : IDL.Null,
   });
-  const Result_7 = IDL.Variant({
+  const Result_9 = IDL.Variant({
     'Ok' : BusinessInUser,
     'Err' : AddBusinessError,
   });
@@ -175,13 +213,15 @@ export const idlFactory = ({ IDL }) => {
     'get_user' : IDL.Func([], [IDL.Opt(User)], ['query']),
     'is_pay_id_available' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
     'mark_message_read' : IDL.Func([IDL.Text], [Result_4], []),
+    'payment_request_message' : IDL.Func([ReqPayArg], [Result_5], []),
+    'record_request_payment' : IDL.Func([RecordReqPayArg], [Result_6], []),
     'record_xfer_transaction' : IDL.Func(
         [IDL.Nat, IDL.Opt(IDL.Text)],
-        [Result_5],
+        [Result_7],
         [],
       ),
-    'sign_up' : IDL.Func([SignUpArg], [Result_6], []),
-    'user_add_business' : IDL.Func([PayIdOrPrincipal], [Result_7], []),
+    'sign_up' : IDL.Func([SignUpArg], [Result_8], []),
+    'user_add_business' : IDL.Func([PayIdOrPrincipal], [Result_9], []),
   });
 };
 export const init = ({ IDL }) => { return []; };

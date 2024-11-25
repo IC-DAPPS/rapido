@@ -10,8 +10,7 @@ use std::cell::RefCell;
 
 mod error;
 use error::{
-    AddBusinessError, AddMessageErr, CreateChatErr, FetchInitDataError, GetBusinessError,
-    MarkMessageReadErr, RecordTxErr, SignUpError,
+    AddBusinessError, AddMessageErr, CreateChatErr, FetchInitDataError, GetBusinessError, MarkMessageReadErr, RecordRegPayTxErr, RecordTxErr, RequestPaymentError, SignUpError
 };
 
 mod business;
@@ -21,8 +20,7 @@ use business::{
 
 mod user;
 use user::{
-    is_user, BusinessInUser, Chat, ChatId, Message, PayIdOrPrincipal, User, UserBusinessTxArg,
-    UserData, UserSignUpArgs, UserToUserTxArg, UserUnknownTxArg,
+    is_user, BusinessInUser, Chat, ChatId, Message, PayIdOrPrincipal, RecordReqPayTxArg, ReqPayArg, RequestPayment, User, UserBusinessTxArg, UserData, UserSignUpArgs, UserToUserTxArg, UserUnknownTxArg
 };
 
 mod ck_btc_ledger;
@@ -461,6 +459,74 @@ pub async fn record_xfer_transaction(
     Ok(())
 }
 
+
+#[update]
+pub fn payment_request_message(args: ReqPayArg) -> Result<RequestPayment, RequestPaymentError>{
+    user::request_payment(args)
+}
+
+#[derive(candid::CandidType, Clone, Serialize, Debug, Deserialize)]
+pub struct RecordReqPayArg {
+    tx_id: Nat,
+    chat_id: ChatId,
+    message_index: usize,
+}
+
+#[update]
+pub async fn record_request_payment(
+    RecordReqPayArg {
+        tx_id,
+        chat_id,
+        message_index,
+    }: RecordReqPayArg,
+) -> Result<(), RecordRegPayTxErr> {
+    if BI::contains_key(tx_id.clone()) {
+        return Err(RecordRegPayTxErr::AlreadyRecorded);
+    }
+
+    let (get_tx_response,) = ck_btc_ledger::get_transactions(true, tx_id.clone())
+        .await
+        .map_err(|err| {
+            RecordRegPayTxErr::InterCanisterCall(format!("get_transactions failed {:?}", err))
+        })?;
+
+    let TransferTx {
+        from,
+        to,
+        timestamp,
+        amount,
+    } = match inspect_xfer_transaction_for_req_payment(tx_id.clone(), get_tx_response) {
+        Ok(xfer_tx) => xfer_tx,
+        Err(err) => return Err(err),
+    };
+
+    match user::record_request_payment(RecordReqPayTxArg{
+        from,
+        to,
+        timestamp,
+        amount,
+        tx_id: tx_id.clone(),
+        chat_id,
+        message_index,
+    }) {
+        Ok(()) => {
+            BI::insert(
+                tx_id,
+                TxInfo {
+                    from: Some(from),
+                    to: Some(to),
+                },
+            );
+        
+            Ok(())
+        },
+        Err(err) =>  Err(err),
+        
+    }
+
+ 
+}
+
 #[query]
 pub async fn is_pay_id_available(pay_id: String) -> bool {
     if pay_id.len() < 3 {
@@ -474,7 +540,6 @@ pub async fn is_pay_id_available(pay_id: String) -> bool {
 
 #[query]
 pub async fn get_account_from_pay_id(pay_id: String) -> Option<Principal> {
-    
     let caller = caller();
 
     if is_user(&caller) || is_business(&caller) {
@@ -522,6 +587,39 @@ fn inspect_xfer_transaction(
         amount: transfer.amount,
     })
 }
+
+fn inspect_xfer_transaction_for_req_payment(
+    tx_id: candid::Nat,
+    mut arg: GetTransactionsResponse,
+) -> Result<TransferTx, RecordRegPayTxErr> {
+    if tx_id >= arg.log_length {
+        return Err(RecordRegPayTxErr::InvalidTransaction(format!(
+            "Invalid ckBTC transaction ID: {tx_id}, Latest transaction ID: {}",
+            arg.log_length
+        )));
+    }
+
+    // Panics if index is out of bounds. cases: transaction archived, invalid block index, length arg is 0
+    let transaction = arg.transactions.swap_remove(0);
+
+    let transfer = match transaction.transfer {
+        Some(xfer) => xfer,
+        None => {
+            return Err(RecordRegPayTxErr::InvalidTransaction(format!(
+                "Expected Transfer, but Transaction kind is {}",
+                transaction.kind
+            )))
+        }
+    };
+
+    Ok(TransferTx {
+        from: transfer.from.owner,
+        to: transfer.to.owner,
+        timestamp: transaction.timestamp,
+        amount: transfer.amount,
+    })
+}
+
 
 #[test]
 fn generate_candid() {
