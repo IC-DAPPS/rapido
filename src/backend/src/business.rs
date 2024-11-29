@@ -282,6 +282,7 @@ pub fn fetch_init_business_data() -> Business {
 
     let length = business.transactions.len();
 
+     // latest first order
     business.transactions = business
         .transactions
         .into_iter()
@@ -297,10 +298,10 @@ pub fn fetch_business_data() -> Business {
 
     let length = business.transactions.len();
 
+    // latest first order
     business.transactions = business
         .transactions
         .into_iter()
-        .skip(if length > 50 { length - 50 } else { 0 })
         .rev()
         .collect::<Vec<_>>();
 

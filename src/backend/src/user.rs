@@ -963,6 +963,7 @@ pub fn fetch_init_user_data() -> UserData {
     //     .collect::<Vec<_>>();
     let history = StoreHistory::get_history(&caller).unwrap_or_default();
     let history_len = history.len();
+     // latest first order
     let history = history
         .into_iter()
         .skip(if history_len > 50 {
@@ -1008,6 +1009,7 @@ pub fn fetch_user_data() -> UserData {
         }
     }
 
+     // latest first order
     // Getting history
     let history = StoreHistory::get_history(&caller)
         .unwrap_or_default()
