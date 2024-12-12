@@ -6,8 +6,9 @@
 
 	let {
 		value = $bindable(),
-		onScanSuccess = () => {} //default if no prop passed
-	}: { value: string; onScanSuccess?: (content: string) => void } = $props();
+		onScanSuccess = () => {}, //default if no prop passed
+		size
+	}: { value: string; onScanSuccess?: (content: string) => void ; size?:number} = $props();
 
 	let toastId: string | number;
 
@@ -37,7 +38,7 @@
 </script>
 
 <Dialog.Root bind:open>
-	<Dialog.Trigger><ScanQrCode /></Dialog.Trigger>
+	<Dialog.Trigger><ScanQrCode size={size}/></Dialog.Trigger>
 	<Dialog.Content>
 		<Dialog.Header>
 			<Dialog.Title>Scan QR Code</Dialog.Title>
