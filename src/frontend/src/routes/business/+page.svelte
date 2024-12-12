@@ -12,7 +12,7 @@
 	<a href="business/qrcode" class="w-fit rounded p-2 hover:bg-accent hover:text-accent-foreground">
 		<div class="flex w-[68px] flex-col items-center gap-2">
 			<QrCode size={30} />
-			<p class="text-center">QR Code</p>
+			<p class="text-center">Your QR Code</p>
 		</div>
 	</a>
 	<a href="business/deposit" class="w-fit rounded p-2 hover:bg-accent hover:text-accent-foreground">
