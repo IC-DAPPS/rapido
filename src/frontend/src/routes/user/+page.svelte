@@ -45,10 +45,10 @@
 		</div>
 	</div>
 
-	<a href="user/userSection" class="w-fit rounded p-2 hover:bg-accent hover:text-accent-foreground">
+	<a href="user/payid" class="w-fit rounded p-2 hover:bg-accent hover:text-accent-foreground">
 		<div class="flex w-[68px] flex-col items-center gap-2">
 			<Upload size={30} />
-			<p class="text-center">Withdraw</p>
+			<p class="text-center">Pay To Pay ID</p>
 		</div>
 	</a>
 
@@ -89,7 +89,7 @@
 							<Button
 								variant="ghost"
 								class="flex h-auto flex-col items-center space-y-2 hover:bg-accent"
-								on:click={handleShowMore}
+								onclick={handleShowMore}
 							>
 								<Avatar class="h-14 w-14">
 									{#if user.avatar}
