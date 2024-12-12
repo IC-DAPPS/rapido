@@ -1,7 +1,9 @@
 <script lang="ts">
 	import HistoryPaymentPreview from '@components/history/HistoryPaymentPreview.svelte';
+	import PaymentHistoryPreviewPlaceholder from '@components/history/PaymentHistoryPreviewPlaceholder.svelte';
 	import Button from '@components/ui/button/button.svelte';
 	import * as Tabs from '@components/ui/tabs/index';
+	import { DIVISOR } from '@constants/app.constants';
 	import type { TransactionEntry } from '@declarations/backend/backend.did';
 	import { balance } from '@states/balance.svelte';
 	import { transaction } from '@states/history.svelte';
@@ -17,7 +19,9 @@
 	let value: Duration = $state('today');
 
 	let today = $derived.by(() => {
-		let midnight = getTodayMidnightTimestamp();
+		// getTodayMidnightTimestamp returns timestamp in milliseconds this need to be compared with nanoseconds
+		let midnight = BigInt(getTodayMidnightTimestamp() * 1_000_000);
+
 		const todaysTx: TransactionEntry[] = [];
 		let todayReceived = BigInt(0);
 
@@ -35,13 +39,15 @@
 		});
 
 		return {
-			received: Number(todayReceived),
+			received: Number(todayReceived) / DIVISOR,
 			history: todaysTx
 		};
 	});
 
 	let sevendays = $derived.by(() => {
-		let sevendayMidnight = getLastSevenDaysMidnightTimestamp();
+		// getTodayMidnightTimestamp returns timestamp in milliseconds this need to be compared with nanoseconds
+		let sevendayMidnight = BigInt(getLastSevenDaysMidnightTimestamp() * 1_000_000);
+
 		const sevendayTx: TransactionEntry[] = [];
 		let sevendayReceived = BigInt(0);
 
@@ -59,13 +65,15 @@
 		});
 
 		return {
-			received: Number(sevendayReceived),
+			received: Number(sevendayReceived) / DIVISOR,
 			history: sevendayTx
 		};
 	});
 
 	let thirtydays = $derived.by(() => {
-		let thirtydaysMidnight = get30DaysMidnightTimestamp();
+		// getTodayMidnightTimestamp returns timestamp in milliseconds this need to be compared with nanoseconds
+		let thirtydaysMidnight = BigInt(get30DaysMidnightTimestamp() * 1_000_000);
+
 		const thirtydaysTx: TransactionEntry[] = [];
 		let todayReceived = BigInt(0);
 
@@ -83,7 +91,7 @@
 		});
 
 		return {
-			received: Number(todayReceived),
+			received: Number(todayReceived) / DIVISOR,
 			history: thirtydaysTx
 		};
 	});
@@ -93,7 +101,7 @@
 <!-- <div class="flex justify-center">
 	<img src="/logo/token/ckbtc.svg" class="mr-3 h-8 w-8" alt="ckBTC logo" /> -->
 <h2 class="text-center text-2xl md:text-4xl">
-	{balance.value}.123456789021 <span class="text-lg text-primary md:text-xl">ckBTC</span>
+	{balance.value} <span class="text-lg text-primary md:text-xl">ckBTC</span>
 </h2>
 <!-- </div> -->
 <div class="flex justify-between">
@@ -132,14 +140,14 @@
 <div class="flex justify-between">
 	<div class="">
 		<div class="flex items-center">
-			<img src="/logo/token/ckbtc.svg" class="mr-1 h-7 w-7" alt="ckBTC logo" />
+			<img src="/logo/token/ckbtc.svg" class="mr-1 h-6 w-6" alt="ckBTC logo" />
 
 			{#if value === 'today'}
-				<h3 class="text-xl font-bold">{today.received}</h3>
+				<h3 class="text-2xl font-semibold">{today.received}</h3>
 			{:else if value === '7days'}
-				<h3 class="text-xl font-bold">{sevendays.received}</h3>
+				<h3 class="text-2xl font-semibold">{sevendays.received}</h3>
 			{:else}
-				<h3 class="text-xl font-bold">{thirtydays.received}</h3>
+				<h3 class="text-2xl font-semibold">{thirtydays.received}</h3>
 			{/if}
 		</div>
 
@@ -164,6 +172,8 @@
 {#if value === 'today'}
 	{#if today.history.length > 0}
 		<HistoryPaymentPreview transaction={today.history[0]} />
+	{:else}
+		<PaymentHistoryPreviewPlaceholder />
 	{/if}
 
 	{#if today.history.length > 1}
@@ -172,6 +182,8 @@
 {:else if value === '7days'}
 	{#if sevendays.history.length > 0}
 		<HistoryPaymentPreview transaction={sevendays.history[0]} />
+	{:else}
+		<PaymentHistoryPreviewPlaceholder />
 	{/if}
 
 	{#if sevendays.history.length > 1}
@@ -180,6 +192,8 @@
 {:else}
 	{#if thirtydays.history.length > 0}
 		<HistoryPaymentPreview transaction={thirtydays.history[0]} />
+	{:else}
+		<PaymentHistoryPreviewPlaceholder />
 	{/if}
 
 	{#if thirtydays.history.length > 1}
@@ -194,6 +208,17 @@
 	</div>
 
 	<p class="font-medium text-primary">↓ 0.00823888</p>
+</div>
+
+<div class="flex items-center justify-between">
+	<div>
+		<p class="font-medium">ljwhn-wbjou-627it-kn</p>
+		<p class="text-sm font-light text-muted-foreground">Nov 26, 10:41 AM</p>
+	</div>
+
+	<p class="font-medium text-primary">↓ 0.00823888</p>
 </div> -->
 
-<Button href="business/payments">View all payments</Button>
+<div class="flex justify-center">
+	<Button class="w-fit px-5" href="business/payments">View all payments</Button>
+</div>

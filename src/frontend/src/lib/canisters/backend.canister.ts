@@ -5,6 +5,7 @@ import type {
 	ChatId,
 	CreateChatResponse,
 	FetchDataResponse,
+	GetNewBusinessTxsParams,
 	IsPayIdAvailableParams,
 	MarkMessageReadResponse,
 	PaymentRequestParams,
@@ -23,7 +24,8 @@ import type {
 	PayIdOrPrincipal,
 	RecordReqPayArg,
 	ReqPayArg,
-	SignUpArg
+	SignUpArg,
+	TransactionEntry
 } from '@declarations/backend/backend.did';
 import { Principal } from '@dfinity/principal';
 import { Canister, createServices, type QueryParams, nonNullish } from '@dfinity/utils';
@@ -69,6 +71,15 @@ export class BackendCanister extends Canister<BackendService> {
 		const { get_my_chats } = this.caller({ certified });
 
 		return get_my_chats();
+	};
+
+	getNewBusinessTransactions = ({
+		certified,
+		length
+	}: GetNewBusinessTxsParams): Promise<TransactionEntry[]> => {
+		const { get_new_business_transactions } = this.caller({ certified });
+
+		return get_new_business_transactions(length);
 	};
 
 	isPayIdAvailable = ({ certified, payId }: IsPayIdAvailableParams): Promise<boolean> => {

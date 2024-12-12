@@ -58,3 +58,44 @@ export function formatNanosecTimestamp(nanoseconds: number): string {
 	// Construct the final formatted string
 	return `${month} ${day}, ${hours}:${minutes} ${ampm}`;
 }
+
+export function formatNanosecTimestampWithYear(nanoseconds: number): string {
+	// Convert nanoseconds to milliseconds (divide by 1,000,000)
+	const timestamp = Math.floor(nanoseconds / 1_000_000);
+
+	// Create a Date object
+	const date = new Date(timestamp);
+
+	// Define month names
+	const months = [
+		'Jan',
+		'Feb',
+		'Mar',
+		'Apr',
+		'May',
+		'Jun',
+		'Jul',
+		'Aug',
+		'Sep',
+		'Oct',
+		'Nov',
+		'Dec'
+	];
+
+	// Format month
+	const month = months[date.getMonth()];
+	const day = date.getDate();
+	const year = date.getFullYear();
+
+	// Format time
+	let hours = date.getHours();
+	const minutes = date.getMinutes().toString().padStart(2, '0');
+	const ampm = hours >= 12 ? 'PM' : 'AM';
+
+	// Convert to 12-hour format
+	hours = hours % 12;
+	hours = hours ? hours : 12; // handle midnight (0 hours)
+
+	// Construct the final formatted string
+	return `${day} ${month} ${year}, ${hours}:${minutes} ${ampm}`;
+}

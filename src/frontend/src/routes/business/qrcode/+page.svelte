@@ -3,13 +3,16 @@
 	import CategoryIcons from '@components/CategoryIcons/CategoryIcons.svelte';
 	import QrCodeGenerator from '@components/QrCode/QrCodeGenerator.svelte';
 	import { user } from '@states/app-user.svelte';
+	import { authStore } from '@stores/auth.store';
 	import { ArrowLeft } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 	import LightningBolt from 'svelte-radix/LightningBolt.svelte';
 
 	let size = 200;
+	let principal = $authStore.identity?.getPrincipal().toText();
 
 	onMount(() => {
+		console.log(principal);
 		if (window.innerWidth >= 1280) {
 			size = 300;
 		}
@@ -24,16 +27,14 @@
 </div>
 
 <p class="text-center text-base">Scan & Pay</p>
-<QrCodeGenerator
-	value={'dwx4w-plydf-jxgs5-uncbu-mfyds-5vjzm-oohax-gmvja-cypv7-tmbt4-dqe'}
-	ariaLabel="QR code"
-	{size}
-	radius={0}
-	ecLevel={'M'}
-	>{#snippet logo()}
-		<Avatar src={user.avatar} name={user.name} />
-	{/snippet}</QrCodeGenerator
->
+
+{#if principal}
+	<QrCodeGenerator value={principal} ariaLabel="QR code" {size} radius={0} ecLevel={'M'}
+		>{#snippet logo()}
+			<Avatar src={user.avatar} name={user.name} />
+		{/snippet}</QrCodeGenerator
+	>
+{/if}
 <div class="flex flex-col items-center gap-0.5">
 	<CategoryIcons category={user.category} />
 	<h2 class="text-center text-2xl">{user.name}</h2>

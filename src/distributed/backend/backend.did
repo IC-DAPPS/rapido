@@ -164,6 +164,7 @@ service : {
   get_business : () -> (Result_3) query;
   get_chat : (text) -> (opt Chat) query;
   get_my_chats : () -> (vec Chat) query;
+  get_new_business_transactions : (nat64) -> (vec TransactionEntry) query;
   get_user : () -> (opt User) query;
   is_pay_id_available : (text) -> (bool) query;
   mark_message_read : (text) -> (Result_4);
