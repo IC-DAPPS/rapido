@@ -1,3 +1,4 @@
+   Compiling backend v0.1.0 (/Users/heaven/Hackathons/rapido/src/backend)
 warning: unused import: `RecordTxErr`
  --> src/backend/src/user.rs:4:5
   |
@@ -17,6 +18,14 @@ warning: unused imports: `Decode` and `Encode`
   |
 1 | use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
   |                                ^^^^^^               ^^^^^^
+
+warning: unused variable: `length`
+   --> src/backend/src/business.rs:299:9
+    |
+299 |     let length = business.transactions.len();
+    |         ^^^^^^ help: if this is intentional, prefix it with an underscore: `_length`
+    |
+    = note: `#[warn(unused_variables)]` on by default
 
 warning: associated functions `get_mut` and `remove` are never used
   --> src/backend/src/business.rs:69:8
@@ -116,149 +125,22 @@ warning: fields `profile_pic` and `created_at` are never read
     |         ^^^^^^^^^^
 
 warning: constant `A_DAY` is never used
-    --> src/backend/src/user.rs:1257:11
+    --> src/backend/src/user.rs:1259:11
      |
-1257 |     const A_DAY: u64 = 86_400;
+1259 |     const A_DAY: u64 = 86_400;
      |           ^^^^^
 
-warning: `backend` (lib test) generated 11 warnings (run `cargo fix --lib -p backend --tests` to apply 3 suggestions)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+warning: `backend` (lib test) generated 12 warnings (run `cargo fix --lib -p backend --tests` to apply 3 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.09s
      Running unittests src/lib.rs (target/debug/deps/backend-4bf858e2d1290d55)
 
 running 1 test
 test generate_candid ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
 
 Generating type declarations for canister backend:
   src/declarations/backend/backend.did.d.ts
   src/declarations/backend/backend.did.js
   src/declarations/backend/backend.did
-Building canisters...
-WARN: Cannot check for vulnerabilities in rust canisters because cargo-audit is not installed. Please run 'cargo install cargo-audit' so that vulnerabilities can be detected.
-Executing: cargo build --target wasm32-unknown-unknown --release -p backend --locked
-warning: unused import: `RecordTxErr`
- --> src/backend/src/user.rs:4:5
-  |
-4 |     RecordTxErr, RequestPaymentError, SignUpError,
-  |     ^^^^^^^^^^^
-  |
-  = note: `#[warn(unused_imports)]` on by default
-
-warning: unused imports: `BI` and `TxInfo`
- --> src/backend/src/user.rs:7:72
-  |
-7 |     is_payid_exist, PayIds, StoreHistory, TransactionEntry, TxHistory, TxInfo, TxKind, BI,
-  |                                                                        ^^^^^^          ^^
-
-warning: unused imports: `Decode` and `Encode`
- --> src/backend/src/ck_btc_ledger.rs:1:32
-  |
-1 | use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
-  |                                ^^^^^^               ^^^^^^
-
-warning: associated functions `get_mut` and `remove` are never used
-  --> src/backend/src/business.rs:69:8
-   |
-64 | impl BusinessMap {
-   | ---------------- associated functions in this implementation
-...
-69 |     fn get_mut(key: &Principal) -> Option<Business> {
-   |        ^^^^^^^
-...
-77 |     fn remove(key: Principal) -> Option<Business> {
-   |        ^^^^^^
-   |
-   = note: `#[warn(dead_code)]` on by default
-
-warning: field `created_at` is never read
-  --> src/backend/src/business.rs:99:9
-   |
-94 | pub struct BusinessMetadata {
-   |            ---------------- field in this struct
-...
-99 |     pub created_at: u64,
-   |         ^^^^^^^^^^
-
-warning: associated functions `get_mut`, `remove`, `contains_key`, and `len` are never used
-   --> src/backend/src/user.rs:130:8
-    |
-125 | impl Chats {
-    | ---------- associated functions in this implementation
-...
-130 |     fn get_mut(key: &ChatId) -> Option<Chat> {
-    |        ^^^^^^^
-...
-138 |     fn remove(key: &ChatId) -> Option<Chat> {
-    |        ^^^^^^
-...
-142 |     fn contains_key(key: &ChatId) -> bool {
-    |        ^^^^^^^^^^^^
-...
-146 |     fn len() -> u64 {
-    |        ^^^
-
-warning: associated functions `get_mut` and `remove` are never used
-   --> src/backend/src/user.rs:197:8
-    |
-192 | impl Users {
-    | ---------- associated functions in this implementation
-...
-197 |     fn get_mut(key: &Principal) -> Option<User> {
-    |        ^^^^^^^
-...
-205 |     fn remove(key: Principal) -> Option<User> {
-    |        ^^^^^^
-
-warning: associated functions `get_mut`, `remove`, `contains_key`, and `len` are never used
-   --> src/backend/src/user.rs:253:8
-    |
-248 | impl BusinessInUser {
-    | ------------------- associated functions in this implementation
-...
-253 |     fn get_mut(key: &String) -> Option<BusinessInUser> {
-    |        ^^^^^^^
-...
-261 |     fn remove(key: &String) -> Option<BusinessInUser> {
-    |        ^^^^^^
-...
-265 |     fn contains_key(key: &String) -> bool {
-    |        ^^^^^^^^^^^^
-...
-269 |     fn len() -> u64 {
-    |        ^^^
-
-warning: associated functions `get_mut`, `remove`, and `contains_key` are never used
-   --> src/backend/src/user.rs:279:8
-    |
-274 | impl StoreHistory {
-    | ----------------- associated functions in this implementation
-...
-279 |     fn get_mut(key: &Principal) -> Option<StoreHistory> {
-    |        ^^^^^^^
-...
-287 |     fn remove(key: Principal) -> Option<StoreHistory> {
-    |        ^^^^^^
-...
-291 |     fn contains_key(key: &Principal) -> bool {
-    |        ^^^^^^^^^^^^
-
-warning: fields `profile_pic` and `created_at` are never read
-   --> src/backend/src/user.rs:316:9
-    |
-313 | pub struct UserMetadata {
-    |            ------------ fields in this struct
-...
-316 |     pub profile_pic: String,
-    |         ^^^^^^^^^^^
-317 |     pub created_at: u64,
-    |         ^^^^^^^^^^
-
-warning: constant `A_DAY` is never used
-    --> src/backend/src/user.rs:1257:11
-     |
-1257 |     const A_DAY: u64 = 86_400;
-     |           ^^^^^
-
-warning: `backend` (lib) generated 11 warnings (run `cargo fix --lib -p backend` to apply 3 suggestions)
-    Finished `release` profile [optimized] target(s) in 0.03s
+[31mError: (B[mCannot find canister id. Please issue 'dfx canister create backend'.

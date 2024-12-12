@@ -5,6 +5,8 @@
 	import BusinessForm from '@components/SignUp/BusinessForm.svelte';
 	import type { ResultSuccess } from '$lib/types/utils';
 	import { goto } from '$app/navigation';
+	import { navigation } from '@utils/navigation.utils';
+	import { authStore } from '@stores/auth.store';
 
 	const accountTypes: { value: 'Individual' | 'Business' }[] = [
 		{ value: 'Individual' },
@@ -50,7 +52,7 @@
 	<BusinessForm
 		resultSuccess={async (result: ResultSuccess) => {
 			if (result.success) {
-				goto('/business');
+				await navigation($authStore?.identity);
 			}
 		}}
 	/>

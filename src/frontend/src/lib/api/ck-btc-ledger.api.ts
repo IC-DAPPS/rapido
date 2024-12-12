@@ -1,6 +1,6 @@
 import { getIcrcLedgerCanister } from '$lib/canisters/icrc-ledger.canister';
 import type { CommonCanisterApiFunctionParams } from '$lib/types/canister';
-import { CKBTC_TEST_LEDGER_CANISTER_ID } from '@constants/app.constants';
+import { CKBTC_LEDGER_CANISTER_ID } from '@constants/app.constants';
 import type { Identity } from '@dfinity/agent';
 
 import type {
@@ -143,7 +143,7 @@ export const consentMessage = async ({
 const ckBtcLedgerCanister = async ({
 	identity,
 	nullishIdentityErrorMessage = 'Identity is nullish',
-	canisterId = CKBTC_TEST_LEDGER_CANISTER_ID
+	canisterId = CKBTC_LEDGER_CANISTER_ID
 }: CommonCanisterApiFunctionParams): Promise<IcrcLedgerCanister> => {
 	assertNonNullish(identity, nullishIdentityErrorMessage);
 

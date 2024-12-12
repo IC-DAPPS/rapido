@@ -48,7 +48,12 @@
 		return currentAmount > balance.value || currentAmount <= 0;
 	});
 
-	let disabled = $derived(enablePayIdError || enableAccountError || enableAmountError);
+	let disabled = $derived.by(() => {
+		if (value === 'Pay Id') {
+			return enablePayIdError || enableAmountError;
+		}
+		return enableAccountError || enableAmountError;
+	});
 	let buttonLoader = $state(false);
 
 	let icrcAccount: Account;

@@ -4,6 +4,10 @@
 		startAutoBalanceFetch,
 		stopAutoBalanceFetch
 	} from '@services/balance.service';
+	import {
+		startAutoFetchNewBusinessTransactions,
+		stopAutoFetchNewBusinessTransactions
+	} from '@services/history.service';
 	import { balance } from '@states/balance.svelte';
 	import { authStore } from '@stores/auth.store';
 	import { onDestroy, onMount } from 'svelte';
@@ -13,10 +17,12 @@
 	onMount(async () => {
 		await fetchBalance();
 
+		startAutoFetchNewBusinessTransactions();
 		startAutoBalanceFetch();
 	});
 
 	onDestroy(() => {
+		stopAutoFetchNewBusinessTransactions();
 		stopAutoBalanceFetch();
 	});
 

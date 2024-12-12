@@ -5,6 +5,7 @@ import type {
 	ChatId,
 	CreateChatResponse,
 	FetchDataResponse,
+	GetNewBusinessTxsParams,
 	IsPayIdAvailableParams,
 	MarkMessageReadResponse,
 	PaymentRequestParams,
@@ -21,7 +22,8 @@ import type {
 	Chat,
 	PayIdOrPrincipal,
 	RecordReqPayArg,
-	SignUpArg
+	SignUpArg,
+	TransactionEntry
 } from '@declarations/backend/backend.did';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
@@ -77,6 +79,16 @@ export const getMyChats = async ({
 	const { getMyChats } = await backendCanister({ identity });
 
 	return getMyChats({ certified });
+};
+
+export const getNewBusinessTransactions = async ({
+	identity,
+	length,
+	certified = false
+}: CommonCanisterApiFunctionParams<GetNewBusinessTxsParams>): Promise<TransactionEntry[]> => {
+	const { getNewBusinessTransactions } = await backendCanister({ identity });
+
+	return getNewBusinessTransactions({ length, certified });
 };
 
 export const isPayIdAvailable = async ({

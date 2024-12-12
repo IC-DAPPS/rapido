@@ -183,6 +183,10 @@ export interface _SERVICE {
   'get_business' : ActorMethod<[], Result_3>,
   'get_chat' : ActorMethod<[string], [] | [Chat]>,
   'get_my_chats' : ActorMethod<[], Array<Chat>>,
+  'get_new_business_transactions' : ActorMethod<
+    [bigint],
+    Array<TransactionEntry>
+  >,
   'get_user' : ActorMethod<[], [] | [User]>,
   'is_pay_id_available' : ActorMethod<[string], boolean>,
   'mark_message_read' : ActorMethod<[string], Result_4>,

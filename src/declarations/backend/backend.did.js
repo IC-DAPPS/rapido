@@ -210,6 +210,11 @@ export const idlFactory = ({ IDL }) => {
     'get_business' : IDL.Func([], [Result_3], ['query']),
     'get_chat' : IDL.Func([IDL.Text], [IDL.Opt(Chat)], ['query']),
     'get_my_chats' : IDL.Func([], [IDL.Vec(Chat)], ['query']),
+    'get_new_business_transactions' : IDL.Func(
+        [IDL.Nat64],
+        [IDL.Vec(TransactionEntry)],
+        ['query'],
+      ),
     'get_user' : IDL.Func([], [IDL.Opt(User)], ['query']),
     'is_pay_id_available' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
     'mark_message_read' : IDL.Func([IDL.Text], [Result_4], []),

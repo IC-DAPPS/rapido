@@ -19,7 +19,11 @@ export const transferCkBTC = async ({
 		const { identity } = get(authStore);
 
 		toastId = toast.loading('Transfering ckBTC...', { id: toastId });
-		const blockIndex = await transfer({ identity, to, amount: BigInt(amount * DIVISOR) });
+		const blockIndex = await transfer({
+			identity,
+			to,
+			amount: BigInt(Math.floor(amount * DIVISOR)) // To remove decimal points after multiplication
+		});
 		toastId = toast.success('Transfered ckBTC', { id: toastId });
 
 		await recordTransferTransactionService(blockIndex, note);

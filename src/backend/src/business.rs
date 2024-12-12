@@ -282,6 +282,7 @@ pub fn fetch_init_business_data() -> Business {
 
     let length = business.transactions.len();
 
+    // latest first order
     business.transactions = business
         .transactions
         .into_iter()
@@ -297,12 +298,23 @@ pub fn fetch_business_data() -> Business {
 
     let length = business.transactions.len();
 
-    business.transactions = business
-        .transactions
-        .into_iter()
-        .skip(if length > 50 { length - 50 } else { 0 })
-        .rev()
-        .collect::<Vec<_>>();
+    // latest first order
+    business.transactions = business.transactions.into_iter().rev().collect::<Vec<_>>();
 
     business
+}
+
+// Here length argument is the lenghth of transaction history array fetch already in frontend
+pub fn get_new_business_transactions(length: usize) -> Vec<TransactionEntry> {
+    let business = match BusinessMap::get(&caller()) {
+        Some(b) => b,
+        None => return Vec::new(),
+    };
+
+    // latest first order
+    business.transactions[length..]
+        .to_vec()
+        .into_iter()
+        .rev()
+        .collect::<Vec<_>>()
 }

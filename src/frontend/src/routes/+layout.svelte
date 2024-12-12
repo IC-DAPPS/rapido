@@ -27,8 +27,8 @@
 
 <ModeWatcher />
 <Toaster />
-<div class="flex justify-between">
+<!-- <div class="flex justify-between">
 	<DarkModeToggle />
 	<AuthButton></AuthButton>
-</div>
+</div> -->
 {@render children()}

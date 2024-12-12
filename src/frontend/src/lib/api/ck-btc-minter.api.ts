@@ -1,6 +1,6 @@
 import { getCkBTCMinterCanister } from '$lib/canisters/ck-btc-minter.canister';
 import type { CommonCanisterApiFunctionParams } from '$lib/types/canister';
-import { CKBTC_TEST_MINTER_CANISTER_ID } from '@constants/app.constants';
+import { CKBTC_MINTER_CANISTER_ID } from '@constants/app.constants';
 import type { Identity } from '@dfinity/agent';
 import type {
 	CkBTCMinterCanister,
@@ -137,7 +137,7 @@ export const getKnownUtxos = async ({
 const ckBTCMinterCanister = async ({
 	identity,
 	nullishIdentityErrorMessage = 'Identity is nullish',
-	canisterId = CKBTC_TEST_MINTER_CANISTER_ID
+	canisterId = CKBTC_MINTER_CANISTER_ID
 }: CommonCanisterApiFunctionParams): Promise<CkBTCMinterCanister> => {
 	assertNonNullish(identity, nullishIdentityErrorMessage);
 

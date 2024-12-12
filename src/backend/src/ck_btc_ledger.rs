@@ -87,20 +87,14 @@ pub struct GetTransactionsResponse {
 }
 
 pub async fn get_transactions(
-    is_test: bool,
     tx_id: candid::Nat,
 ) -> Result<(GetTransactionsResponse,)> {
     let args = GetBlocksRequest {
         start: tx_id,
         length: candid::Nat::from(1u8),
     };
-    let ck_test_btc_ledger = Principal::from_text("mc6ru-gyaaa-aaaar-qaaaq-cai").unwrap();
+ 
     let ck_btc_ledger = Principal::from_text("mxzaz-hqaaa-aaaar-qaada-cai").unwrap();
-    let canister_id = if is_test {
-        ck_test_btc_ledger
-    } else {
-        ck_btc_ledger
-    };
 
-    ic_cdk::call(canister_id, "get_transactions", (args,)).await
+    ic_cdk::call(ck_btc_ledger, "get_transactions", (args,)).await
 }

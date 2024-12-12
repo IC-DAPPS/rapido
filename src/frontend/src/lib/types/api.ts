@@ -54,3 +54,7 @@ export interface PaymentRequestParams {
 export type PaymentRequestResponse = { Ok: RequestPayment } | { Err: AddMessageErr };
 
 export type RecordRequestPaymentResponse = { Ok: null } | { Err: RecordRegPayTxErr };
+
+export interface GetNewBusinessTxsParams extends QueryParams {
+	length: bigint;
+}

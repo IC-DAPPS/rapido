@@ -10,7 +10,8 @@ use std::cell::RefCell;
 
 mod error;
 use error::{
-    AddBusinessError, AddMessageErr, CreateChatErr, FetchInitDataError, GetBusinessError, MarkMessageReadErr, RecordRegPayTxErr, RecordTxErr, RequestPaymentError, SignUpError
+    AddBusinessError, AddMessageErr, CreateChatErr, FetchInitDataError, GetBusinessError,
+    MarkMessageReadErr, RecordRegPayTxErr, RecordTxErr, RequestPaymentError, SignUpError,
 };
 
 mod business;
@@ -20,7 +21,9 @@ use business::{
 
 mod user;
 use user::{
-    is_user, BusinessInUser, Chat, ChatId, Message, PayIdOrPrincipal, RecordReqPayTxArg, ReqPayArg, RequestPayment, User, UserBusinessTxArg, UserData, UserSignUpArgs, UserToUserTxArg, UserUnknownTxArg
+    is_user, BusinessInUser, Chat, ChatId, Message, PayIdOrPrincipal, RecordReqPayTxArg, ReqPayArg,
+    RequestPayment, User, UserBusinessTxArg, UserData, UserSignUpArgs, UserToUserTxArg,
+    UserUnknownTxArg,
 };
 
 mod ck_btc_ledger;
@@ -316,7 +319,7 @@ pub async fn record_xfer_transaction(
         return Err(RecordTxErr::AlreadyRecorded);
     }
 
-    let (get_tx_response,) = ck_btc_ledger::get_transactions(true, tx_id.clone())
+    let (get_tx_response,) = ck_btc_ledger::get_transactions(tx_id.clone())
         .await
         .map_err(|err| {
             RecordTxErr::InterCanisterCall(format!("get_transactions failed {:?}", err))
@@ -459,9 +462,8 @@ pub async fn record_xfer_transaction(
     Ok(())
 }
 
-
 #[update]
-pub fn payment_request_message(args: ReqPayArg) -> Result<RequestPayment, RequestPaymentError>{
+pub fn payment_request_message(args: ReqPayArg) -> Result<RequestPayment, RequestPaymentError> {
     user::request_payment(args)
 }
 
@@ -484,7 +486,7 @@ pub async fn record_request_payment(
         return Err(RecordRegPayTxErr::AlreadyRecorded);
     }
 
-    let (get_tx_response,) = ck_btc_ledger::get_transactions(true, tx_id.clone())
+    let (get_tx_response,) = ck_btc_ledger::get_transactions(tx_id.clone())
         .await
         .map_err(|err| {
             RecordRegPayTxErr::InterCanisterCall(format!("get_transactions failed {:?}", err))
@@ -500,7 +502,7 @@ pub async fn record_request_payment(
         Err(err) => return Err(err),
     };
 
-    match user::record_request_payment(RecordReqPayTxArg{
+    match user::record_request_payment(RecordReqPayTxArg {
         from,
         to,
         timestamp,
@@ -517,18 +519,15 @@ pub async fn record_request_payment(
                     to: Some(to),
                 },
             );
-        
-            Ok(())
-        },
-        Err(err) =>  Err(err),
-        
-    }
 
- 
+            Ok(())
+        }
+        Err(err) => Err(err),
+    }
 }
 
 #[query]
-pub async fn is_pay_id_available(pay_id: String) -> bool {
+pub fn is_pay_id_available(pay_id: String) -> bool {
     if pay_id.len() < 3 {
         return false;
     }
@@ -539,7 +538,7 @@ pub async fn is_pay_id_available(pay_id: String) -> bool {
 }
 
 #[query]
-pub async fn get_account_from_pay_id(pay_id: String) -> Option<Principal> {
+pub fn get_account_from_pay_id(pay_id: String) -> Option<Principal> {
     let caller = caller();
 
     if is_user(&caller) || is_business(&caller) {
@@ -556,13 +555,18 @@ struct TransferTx {
     amount: Nat,
 }
 
+#[query]
+pub fn get_new_business_transactions(length: usize) -> Vec<TransactionEntry> {
+    business::get_new_business_transactions(length)
+}
+
 fn inspect_xfer_transaction(
     tx_id: candid::Nat,
     mut arg: GetTransactionsResponse,
 ) -> Result<TransferTx, RecordTxErr> {
     if tx_id >= arg.log_length {
         return Err(RecordTxErr::InvalidTransaction(format!(
-            "Invalid ckBTC transaction ID: {tx_id}, Latest transaction ID: {}",
+            "Invalid ckBTC transaction ID: {tx_id}, Log lenght is: {}",
             arg.log_length
         )));
     }
@@ -594,7 +598,7 @@ fn inspect_xfer_transaction_for_req_payment(
 ) -> Result<TransferTx, RecordRegPayTxErr> {
     if tx_id >= arg.log_length {
         return Err(RecordRegPayTxErr::InvalidTransaction(format!(
-            "Invalid ckBTC transaction ID: {tx_id}, Latest transaction ID: {}",
+            "Invalid ckBTC transaction ID: {tx_id}, Log lenght is: {}",
             arg.log_length
         )));
     }
@@ -619,7 +623,6 @@ fn inspect_xfer_transaction_for_req_payment(
         amount: transfer.amount,
     })
 }
-
 
 #[test]
 fn generate_candid() {

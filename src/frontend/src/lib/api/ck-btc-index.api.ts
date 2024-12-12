@@ -1,6 +1,6 @@
 import { getIcrcIndexNgCanister } from '$lib/canisters/icrc-index.canister';
 import type { CommonCanisterApiFunctionParams } from '$lib/types/canister';
-import { CKBTC_TEST_INDEX_CANISTER_ID } from '@constants/app.constants';
+import { CKBTC_INDEX_CANISTER_ID } from '@constants/app.constants';
 import type { Identity } from '@dfinity/agent';
 import type {
 	BalanceParams,
@@ -47,7 +47,7 @@ export const balance = async ({
 const ckBtcIndexCanister = async ({
 	identity,
 	nullishIdentityErrorMessage = 'Identity is nullish',
-	canisterId = CKBTC_TEST_INDEX_CANISTER_ID
+	canisterId = CKBTC_INDEX_CANISTER_ID
 }: CommonCanisterApiFunctionParams): Promise<IcrcIndexNgCanister> => {
 	assertNonNullish(identity, nullishIdentityErrorMessage);
 
