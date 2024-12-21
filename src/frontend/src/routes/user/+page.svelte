@@ -7,13 +7,22 @@
 	import { ScanQrCode } from 'lucide-svelte';
 	import QrCodeScanModel from '@components/QrCode/QrCodeScanModel.svelte';
 
-	// Mock users data
-	const mockUsers = Array.from({ length: 45 }, (_, i) => ({
-		id: i + 1,
-		name: `User ${i + 1}`,
-		avatar: i % 5 === 0 ? '' : `https://api.dicebear.com/8.x/personas/svg?seed=${i}`,
-		initial: `U${i + 1}`
-	}));
+	const firstNames = [
+		'Emma', 'Lily', 'Olivia', 'Noah', 'Ava', 'Ethan', 'Sophia', 'Mason', 
+		'Isabella', 'William', 'MiaK', 'James', 'Charlotte', 'Benjamin', 
+		'Amelia', 'Lucas', 'Harper', 'Henry', 'Evelyn', 'Alexander'
+	];
+
+	const mockUsers = Array.from({ length: 45 }, (_, i) => {
+		const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+		
+		return {
+			id: i + 1,
+			name: `${firstName}`,
+			avatar: `https://api.dicebear.com/8.x/personas/svg?seed=${i}`,
+			initial: `${firstName[0]}}`
+		};
+	});
 
 	let address = $state('');
 	let isAddressTouched = $state(false);
